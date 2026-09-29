@@ -22,7 +22,7 @@ Built with Playwright + TypeScript.
 ├── api/                              # DemoblazeClient - thin wrapper over the site's API
 ├── fixtures/
 │   └── base-test.ts                  # Base test with shared fixtures: log, apiClient
-├── utils/                            # For helper utils. e.g. login-via-API helper, username generator, etc
+├── utils/                            # For helper utils. e.g. loginViaApi helper, etc
 ├── k6/                               # Standalone k6 load test (separate tool, separate runtime)
 ├── playwright.config.ts              # Project configuration
 └── .github/workflows/tests.yml       # GitHub Action for triggering test

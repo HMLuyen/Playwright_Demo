@@ -3,7 +3,7 @@ export const SAMSUNG_GALAXY_S6 = { id: 1, price: 360 }
 /**
  * One dedicated account per test.describe group in order.spec.ts, not one shared account —
  * lets groups run in parallel against each other (no shared cart/session), while each group
- * is internally serial to avoid racing itself.
+ * runs its tests in order on one worker (mode: 'default') to avoid racing itself.
  */
 export const ORDER_VALIDATION_ACCOUNT = {
   username: 'testUserOrderValidation',

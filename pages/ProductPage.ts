@@ -1,4 +1,4 @@
-import { Locator } from '@playwright/test'
+import { Locator, expect } from '@playwright/test'
 import { BasePage } from './BasePage'
 import { captureDialog } from '../utils/dialog'
 import { logger } from '../utils/logger'
@@ -17,6 +17,7 @@ export class ProductPage extends BasePage {
     const message = await captureDialog(this.page, async () => {
       await this.addToCartLink.click()
     })
+    expect(message, 'Expect "Product added." alert after add to cart').toBe('Product added.')
     logger.step('Add product to cart successfully')
     return message
   }

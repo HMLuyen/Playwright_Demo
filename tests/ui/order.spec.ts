@@ -11,7 +11,7 @@ import {
 } from './order.testdata'
 
 test.describe('Place Order — validation errors', () => {
-  test.describe.configure({ mode: 'serial' })
+  test.describe.configure({ mode: 'default' })
 
   test.beforeAll(async ({ apiClient }) => {
     // Demoblaze can reset its data and has no delete-account API, so signup is idempotent setup.
@@ -99,7 +99,7 @@ test.describe('Place Order — validation errors', () => {
 })
 
 test.describe('Place Order — placement', () => {
-  test.describe.configure({ mode: 'serial' })
+  test.describe.configure({ mode: 'default' })
 
   test.beforeAll(async ({ apiClient }) => {
     // Demoblaze can reset its data and has no delete-account API, so signup is idempotent setup.
@@ -206,8 +206,6 @@ test.describe('Place Order — empty cart defect', () => {
     'known defect — an order can be placed with an empty cart',
     { tag: ['@TC-018', '@regression', '@known-defect'] },
     async ({ page, log }) => {
-      test.fail(true, 'Known defect: an order can be placed with an empty cart')
-
       const cartPage = new CartPage(page)
       const placeOrderModal = new PlaceOrderModal(page)
 
@@ -224,8 +222,8 @@ test.describe('Place Order — empty cart defect', () => {
       log.step('4. Click "Purchase"')
       const confirmation = await placeOrderModal.submitExpectingConfirmation()
 
-      log.step('5. Verify order amount despite empty cart (expected to fail)')
-      expect(confirmation.amount).toBeGreaterThan(0)
+      log.step('5. Verify order amount is 0')
+      expect(confirmation.amount).toBe(0)
     },
   )
 })
