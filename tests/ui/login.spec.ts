@@ -4,7 +4,7 @@ import { LoginModal } from '../../pages/LoginModal'
 import { LOGIN_TEST_ACCOUNT } from './login.testdata'
 
 test.describe('Login', () => {
-  test('TC-001: valid credentials log the user in', { tag: '@smoke' }, async ({ page }) => {
+  test('valid credentials log the user in', { tag: ['@TC-001', '@smoke'] }, async ({ page }) => {
     const homePage = new HomePage(page)
     const loginModal = new LoginModal(page)
     await homePage.goto()
@@ -15,8 +15,8 @@ test.describe('Login', () => {
   })
 
   test(
-    'TC-002: empty username and password shows validation alert',
-    { tag: '@regression' },
+    'empty username and password shows validation alert',
+    { tag: ['@TC-002', '@regression'] },
     async ({ page }) => {
       const homePage = new HomePage(page)
       const loginModal = new LoginModal(page)
@@ -28,8 +28,8 @@ test.describe('Login', () => {
   )
 
   test(
-    'TC-003: unknown username shows "User does not exist."',
-    { tag: '@regression' },
+    'unknown username shows "User does not exist."',
+    { tag: ['@TC-003', '@regression'] },
     async ({ page }) => {
       const homePage = new HomePage(page)
       const loginModal = new LoginModal(page)
@@ -42,8 +42,8 @@ test.describe('Login', () => {
   )
 
   test(
-    'TC-004: wrong password for an existing user shows "Wrong password."',
-    { tag: '@regression' },
+    'wrong password for an existing user shows "Wrong password."',
+    { tag: ['@TC-004', '@regression'] },
     async ({ page }) => {
       const homePage = new HomePage(page)
       const loginModal = new LoginModal(page)
@@ -56,8 +56,8 @@ test.describe('Login', () => {
   )
 
   test(
-    'TC-008: SQL-injection-style username is treated as just another unknown user',
-    { tag: '@regression' },
+    'SQL-injection-style username is treated as just another unknown user',
+    { tag: ['@TC-008', '@regression'] },
     async ({ page }) => {
       const homePage = new HomePage(page)
       const loginModal = new LoginModal(page)

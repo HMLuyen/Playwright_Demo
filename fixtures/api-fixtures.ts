@@ -1,6 +1,6 @@
 import { test as base } from '@playwright/test'
 import { DemoblazeClient } from '../api/demoblazeClient'
-import { API_TEST_ACCOUNT } from '../tests/api/testdata'
+import { API_TEST_ACCOUNT } from '../tests/api/login.api.testdata'
 import { API_URL } from '../utils/env'
 
 interface ApiAccount {

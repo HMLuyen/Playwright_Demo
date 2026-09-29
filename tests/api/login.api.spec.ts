@@ -4,8 +4,8 @@ import { API_URL } from '../../utils/env'
 
 test.describe('Login via API', () => {
   test(
-    'TC-API-LOGIN-001: valid login returns a token',
-    { tag: '@smoke' },
+    'valid login returns a token',
+    { tag: ['@TC-021', '@smoke'] },
     async ({ apiClient, apiAccount }) => {
       const token = await apiClient.login(apiAccount)
       expect(token.length).toBeGreaterThan(0)
@@ -13,8 +13,8 @@ test.describe('Login via API', () => {
   )
 
   test(
-    'TC-API-LOGIN-002: wrong password rejects with "Wrong password."',
-    { tag: '@regression' },
+    'wrong password rejects with "Wrong password."',
+    { tag: ['@TC-022', '@regression'] },
     async ({ apiClient, apiAccount }) => {
       await expect(
         apiClient.login({ username: apiAccount.username, password: 'DefinitelyWrongPassword!' }),
@@ -23,8 +23,8 @@ test.describe('Login via API', () => {
   )
 
   test(
-    'TC-API-LOGIN-003: unknown username rejects with "User does not exist."',
-    { tag: '@regression' },
+    'unknown username rejects with "User does not exist."',
+    { tag: ['@TC-023', '@regression'] },
     async ({ apiClient }) => {
       await expect(
         apiClient.login({ username: `no_such_user_${Date.now()}`, password: 'anyPassword123' }),
@@ -33,8 +33,8 @@ test.describe('Login via API', () => {
   )
 
   test(
-    'TC-API-LOGIN-004: password is base64-encoded before being sent, never plaintext',
-    { tag: '@regression' },
+    'password is base64-encoded before being sent, never plaintext',
+    { tag: ['@TC-024', '@regression'] },
     async ({ request }, testInfo) => {
       const username = generateWorkerUsername(
         `${testInfo.project.name}_encodetest`,

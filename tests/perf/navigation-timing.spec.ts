@@ -7,8 +7,8 @@ const DOM_CONTENT_LOADED_BUDGET_MS = 3000
 
 test.describe('Performance budget', () => {
   test(
-    'TC-PERF-001: home page DOMContentLoaded completes within budget',
-    { tag: '@regression' },
+    'home page DOMContentLoaded completes within budget',
+    { tag: ['@TC-020', '@regression'] },
     async ({ page }) => {
       await page.goto('/')
       const timing = await page.evaluate(() => {

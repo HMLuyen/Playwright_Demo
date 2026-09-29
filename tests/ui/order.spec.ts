@@ -17,8 +17,8 @@ test.describe('Place Order', () => {
   })
 
   test(
-    'TC-014: a valid order with only Name and Card succeeds',
-    { tag: '@smoke' },
+    'a valid order with only Name and Card succeeds',
+    { tag: ['@TC-014', '@smoke'] },
     async ({ page }) => {
       const productPage = new ProductPage(page)
       const cartPage = new CartPage(page)
@@ -41,8 +41,8 @@ test.describe('Place Order', () => {
   )
 
   test(
-    'TC-015: missing both Name and Card shows validation alert',
-    { tag: '@regression' },
+    'missing both Name and Card shows validation alert',
+    { tag: ['@TC-015', '@regression'] },
     async ({ page }) => {
       const cartPage = new CartPage(page)
       const placeOrderModal = new PlaceOrderModal(page)
@@ -55,8 +55,8 @@ test.describe('Place Order', () => {
   )
 
   test(
-    'TC-016: missing Name only shows the same validation alert',
-    { tag: '@regression' },
+    'missing Name only shows the same validation alert',
+    { tag: ['@TC-016', '@regression'] },
     async ({ page }) => {
       const cartPage = new CartPage(page)
       const placeOrderModal = new PlaceOrderModal(page)
@@ -72,8 +72,8 @@ test.describe('Place Order', () => {
   )
 
   test(
-    'TC-017: missing Card only shows the same validation alert',
-    { tag: '@regression' },
+    'missing Card only shows the same validation alert',
+    { tag: ['@TC-017', '@regression'] },
     async ({ page }) => {
       const cartPage = new CartPage(page)
       const placeOrderModal = new PlaceOrderModal(page)
@@ -87,8 +87,8 @@ test.describe('Place Order', () => {
   )
 
   test(
-    'TC-018: known defect — an order can be placed with an empty cart',
-    { tag: ['@regression', '@known-defect'] },
+    'known defect — an order can be placed with an empty cart',
+    { tag: ['@TC-018', '@regression', '@known-defect'] },
     async ({ page }) => {
       test.fail(true, 'Known defect: an order can be placed with an empty cart')
 
@@ -106,8 +106,8 @@ test.describe('Place Order', () => {
   )
 
   test(
-    'TC-019: known defect — confirmation date is one month behind the real date',
-    { tag: ['@regression', '@known-defect'] },
+    'known defect — confirmation date is one month behind the real date',
+    { tag: ['@TC-019', '@regression', '@known-defect'] },
     async ({ page }) => {
       test.fail(true, 'Known defect: confirmation date is one month behind the real date')
 
