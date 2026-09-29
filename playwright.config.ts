@@ -19,7 +19,6 @@ export default defineConfig({
   use: {
     baseURL: BASE_URL,
     headless: HEADLESS,
-    timezoneId: 'UTC',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',

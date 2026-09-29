@@ -17,7 +17,6 @@ export interface PurchaseConfirmation {
   amount: number
   cardNumber: string
   name: string
-  date: string
 }
 
 function parseConfirmationText(text: string): PurchaseConfirmation {
@@ -25,13 +24,11 @@ function parseConfirmationText(text: string): PurchaseConfirmation {
   const amountMatch = text.match(/Amount:\s*(\d+)\s*USD/)
   const cardMatch = text.match(/Card Number:\s*([\s\S]*?)Name:/)
   const nameMatch = text.match(/Name:\s*([\s\S]*?)Date:/)
-  const dateMatch = text.match(/Date:\s*([\s\S]*)$/)
   return {
     id: idMatch?.[1] ?? '',
     amount: amountMatch ? parseInt(amountMatch[1], 10) : NaN,
     cardNumber: cardMatch?.[1]?.trim() ?? '',
     name: nameMatch?.[1]?.trim() ?? '',
-    date: dateMatch?.[1]?.trim() ?? '',
   }
 }
 
