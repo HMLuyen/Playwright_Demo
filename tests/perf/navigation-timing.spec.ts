@@ -1,13 +1,11 @@
 import { test, expect } from '@playwright/test'
 
-// Kept intentionally small — this is a public third-party site we don't own,
-// not infrastructure to load-test hard. See k6/login-load-test.js for the
-// API-level counterpart.
+// Kept intentionally small, this is a public third-party site we don't own.
 const DOM_CONTENT_LOADED_BUDGET_MS = 3000
 
-test.describe('Performance budget', () => {
+test.describe('Performance tests', () => {
   test(
-    'home page DOMContentLoaded completes within budget',
+    'home page DOMContentLoaded completes within baseline',
     { tag: ['@TC-020', '@regression'] },
     async ({ page }) => {
       await page.goto('/')

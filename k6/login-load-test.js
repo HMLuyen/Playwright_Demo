@@ -1,16 +1,12 @@
 import http from 'k6/http'
 import encoding from 'k6/encoding'
 import { check, sleep } from 'k6'
+import { K6_TEST_ACCOUNT } from './login-load-test.testdata.js'
 
-// k6 has its own JS runtime — no node_modules, no imports from the rest of this
-// repo. Settings come from __ENV, not .env.
 const BASE_URL = __ENV.API_URL || 'https://api.demoblaze.com'
-const VUS = __ENV.VUS ? parseInt(__ENV.VUS, 10) : 5
-const DURATION = __ENV.DURATION || '30s'
+const VUS = __ENV.VUS ? parseInt(__ENV.VUS, 10) : 2
+const DURATION = __ENV.DURATION || '10s'
 
-// Deliberately tiny: this proves the framework can run a load test and produce
-// p95/error-rate output, not a real capacity test against a public third-party
-// site we don't own.
 export const options = {
   vus: VUS,
   duration: DURATION,
@@ -20,24 +16,15 @@ export const options = {
   },
 }
 
-// setup() runs once (not per-VU) — signs up a single shared account so this
-// script doesn't create one account per virtual user on a public site.
+// No signup — fixed account, must already exist (see login-load-test.testdata.js).
 export function setup() {
-  const username = `pwdemo_k6_${Date.now()}`
-  const password = 'K6LoadTestPass1'
-  const encodedPassword = encoding.b64encode(password)
-
-  http.post(`${BASE_URL}/signup`, JSON.stringify({ username, password: encodedPassword }), {
-    headers: { 'Content-Type': 'application/json' },
-  })
-
-  return { username, encodedPassword }
+  return { encodedPassword: encoding.b64encode(K6_TEST_ACCOUNT.password) }
 }
 
 export default function (data) {
   const loginRes = http.post(
     `${BASE_URL}/login`,
-    JSON.stringify({ username: data.username, password: data.encodedPassword }),
+    JSON.stringify({ username: K6_TEST_ACCOUNT.username, password: data.encodedPassword }),
     { headers: { 'Content-Type': 'application/json' } },
   )
 
