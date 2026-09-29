@@ -1,23 +1,28 @@
 import { test, expect } from '../../fixtures/api-fixtures'
 import { generateWorkerUsername } from '../../utils/users'
 import { API_URL } from '../../utils/env'
+import { API_TEST_ACCOUNT } from './login.api.testdata'
 
 test.describe('Login via API', () => {
-  test(
-    'valid login returns a token',
-    { tag: ['@TC-021', '@smoke'] },
-    async ({ apiClient, apiAccount }) => {
-      const token = await apiClient.login(apiAccount)
-      expect(token.length).toBeGreaterThan(0)
-    },
-  )
+  test.beforeAll(async ({ apiClient }) => {
+    // Make sure the account exists before running the tests.
+    await apiClient.signup(API_TEST_ACCOUNT)
+  })
+
+  test('valid login returns a token', { tag: ['@TC-021', '@smoke'] }, async ({ apiClient }) => {
+    const token = await apiClient.login(API_TEST_ACCOUNT)
+    expect(token.length).toBeGreaterThan(0)
+  })
 
   test(
     'wrong password rejects with "Wrong password."',
     { tag: ['@TC-022', '@regression'] },
-    async ({ apiClient, apiAccount }) => {
+    async ({ apiClient }) => {
       await expect(
-        apiClient.login({ username: apiAccount.username, password: 'DefinitelyWrongPassword!' }),
+        apiClient.login({
+          username: API_TEST_ACCOUNT.username,
+          password: 'DefinitelyWrongPassword!',
+        }),
       ).rejects.toThrow('Wrong password.')
     },
   )

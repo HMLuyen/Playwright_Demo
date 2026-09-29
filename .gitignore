@@ -10,6 +10,3 @@ k6-summary.json
 # OS / editor junk
 .DS_Store
 ~$*.xlsx
-
-# Local-only docs
-PLAN.md
