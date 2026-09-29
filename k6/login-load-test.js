@@ -16,7 +16,6 @@ export const options = {
   },
 }
 
-// No signup — fixed account, must already exist (see login-load-test.testdata.js).
 export function setup() {
   return { encodedPassword: encoding.b64encode(K6_TEST_ACCOUNT.password) }
 }
