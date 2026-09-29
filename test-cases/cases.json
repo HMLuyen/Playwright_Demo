@@ -1,6 +1,6 @@
 [
   {
-    "id": "TC-LOGIN-001",
+    "id": "TC-001",
     "module": "Login",
     "type": "Functional",
     "priority": "High",
@@ -13,7 +13,7 @@
     "knownDefect": ""
   },
   {
-    "id": "TC-LOGIN-002",
+    "id": "TC-002",
     "module": "Login",
     "type": "Negative",
     "priority": "High",
@@ -26,7 +26,7 @@
     "knownDefect": ""
   },
   {
-    "id": "TC-LOGIN-003",
+    "id": "TC-003",
     "module": "Login",
     "type": "Negative",
     "priority": "High",
@@ -39,7 +39,7 @@
     "knownDefect": ""
   },
   {
-    "id": "TC-LOGIN-004",
+    "id": "TC-004",
     "module": "Login",
     "type": "Negative",
     "priority": "High",
@@ -52,7 +52,7 @@
     "knownDefect": ""
   },
   {
-    "id": "TC-LOGIN-005",
+    "id": "TC-005",
     "module": "Login",
     "type": "Edge",
     "priority": "Medium",
@@ -65,7 +65,7 @@
     "knownDefect": ""
   },
   {
-    "id": "TC-LOGIN-006",
+    "id": "TC-006",
     "module": "Login",
     "type": "Functional",
     "priority": "Medium",
@@ -78,33 +78,33 @@
     "knownDefect": ""
   },
   {
-    "id": "TC-LOGIN-007",
+    "id": "TC-007",
     "module": "Login",
     "type": "Edge",
     "priority": "Low",
     "preconditions": "None",
     "steps": "1. Go to home page. 2. Click \"Sign up\". 3. Enter a very long username (200+ characters). 4. Click \"Sign up\".",
     "testData": "A 200+ character username",
-    "expectedResult": "Not verified live — exploratory only. Site behavior for an oversized username is unknown.",
+    "expectedResult": "Not verified live \u2014 exploratory only. Site behavior for an oversized username is unknown.",
     "automated": "N",
     "automatedSpec": "",
     "knownDefect": ""
   },
   {
-    "id": "TC-LOGIN-008",
+    "id": "TC-008",
     "module": "Login",
     "type": "Negative",
     "priority": "Low",
     "preconditions": "None",
     "steps": "1. Go to home page. 2. Click \"Log in\". 3. Enter a SQL-injection-style string as the username, e.g. ' OR '1'='1. 4. Click \"Log in\".",
     "testData": "username = \"' OR '1'='1\"",
-    "expectedResult": "Alert: \"User does not exist.\" — treated the same as any other unknown username, no special handling observed.",
+    "expectedResult": "Alert: \"User does not exist.\" \u2014 treated the same as any other unknown username, no special handling observed.",
     "automated": "Y",
     "automatedSpec": "tests/ui/login.spec.ts",
     "knownDefect": ""
   },
   {
-    "id": "TC-CART-001",
+    "id": "TC-009",
     "module": "Cart",
     "type": "Functional",
     "priority": "High",
@@ -117,7 +117,7 @@
     "knownDefect": ""
   },
   {
-    "id": "TC-CART-002",
+    "id": "TC-010",
     "module": "Cart",
     "type": "Functional",
     "priority": "Medium",
@@ -130,7 +130,7 @@
     "knownDefect": ""
   },
   {
-    "id": "TC-CART-003",
+    "id": "TC-011",
     "module": "Cart",
     "type": "Edge",
     "priority": "Medium",
@@ -143,7 +143,7 @@
     "knownDefect": ""
   },
   {
-    "id": "TC-CART-004",
+    "id": "TC-012",
     "module": "Cart",
     "type": "Functional",
     "priority": "High",
@@ -156,20 +156,20 @@
     "knownDefect": ""
   },
   {
-    "id": "TC-CART-005",
+    "id": "TC-013",
     "module": "Cart",
     "type": "Edge",
     "priority": "Low",
     "preconditions": "Logged out (guest)",
     "steps": "1. Open a product page while logged out. 2. Click \"Add to cart\".",
     "testData": "Samsung galaxy s6 (product id 1)",
-    "expectedResult": "Alert: \"Product added\" — no trailing period, unlike the logged-in path's \"Product added.\". Real copy inconsistency, not a rendering issue.",
+    "expectedResult": "Alert: \"Product added\" \u2014 no trailing period, unlike the logged-in path's \"Product added.\". Real copy inconsistency, not a rendering issue.",
     "automated": "N",
     "automatedSpec": "",
     "knownDefect": ""
   },
   {
-    "id": "TC-ORDER-001",
+    "id": "TC-014",
     "module": "Order",
     "type": "Functional",
     "priority": "High",
@@ -182,7 +182,7 @@
     "knownDefect": ""
   },
   {
-    "id": "TC-ORDER-002",
+    "id": "TC-015",
     "module": "Order",
     "type": "Negative",
     "priority": "High",
@@ -195,7 +195,7 @@
     "knownDefect": ""
   },
   {
-    "id": "TC-ORDER-003",
+    "id": "TC-016",
     "module": "Order",
     "type": "Negative",
     "priority": "Medium",
@@ -208,7 +208,7 @@
     "knownDefect": ""
   },
   {
-    "id": "TC-ORDER-004",
+    "id": "TC-017",
     "module": "Order",
     "type": "Negative",
     "priority": "Medium",
@@ -221,7 +221,7 @@
     "knownDefect": ""
   },
   {
-    "id": "TC-ORDER-005",
+    "id": "TC-018",
     "module": "Order",
     "type": "Negative",
     "priority": "High",
@@ -231,10 +231,10 @@
     "expectedResult": "Correct behavior: the order should be blocked, or at minimum the amount should not be a real charge. Actual (defect): order succeeds, confirmation shows \"Amount: 0 USD\".",
     "automated": "Y",
     "automatedSpec": "tests/ui/order.spec.ts (test.fail())",
-    "knownDefect": "Yes — PLAN.md Section 2, defect #2. purchaseOrder() never checks cart length before showing success."
+    "knownDefect": "Yes \u2014 PLAN.md Section 2, defect #2. purchaseOrder() never checks cart length before showing success."
   },
   {
-    "id": "TC-ORDER-006",
+    "id": "TC-019",
     "module": "Order",
     "type": "Functional",
     "priority": "Medium",
@@ -244,6 +244,6 @@
     "expectedResult": "Correct behavior: Date should match today's real calendar date. Actual (defect): month is always one behind (e.g. shows August on September 28).",
     "automated": "Y",
     "automatedSpec": "tests/ui/order.spec.ts (test.fail())",
-    "knownDefect": "Yes — PLAN.md Section 2, defect #1. purchaseOrder() uses date.getMonth() with no +1."
+    "knownDefect": "Yes \u2014 PLAN.md Section 2, defect #1. purchaseOrder() uses date.getMonth() with no +1."
   }
 ]

@@ -53,8 +53,8 @@ every site behavior verified live against the real site before any code was writ
 - **`test-cases/cases.json`** documents all 19 cases (functional/edge/negative) even though only
   11 are automated — the rest (signup flows, standalone cart checks) are out of the literal brief's
   scope but kept as documented, reviewable test-case coverage. The `.xlsx` is generated from it.
-  Every automated spec's test title starts with the matching ID (e.g. `TC-ORDER-005: ...`), so
-  `npx playwright test --grep TC-ORDER-005` runs one case straight from the sheet.
+  Every automated spec's test title starts with the matching ID (e.g. `TC-018: ...`), so
+  `npx playwright test --grep TC-018` runs one case straight from the sheet.
 
 ## Setup
 
@@ -85,7 +85,7 @@ npx playwright test                                   # full suite, all 5 projec
 npx playwright test --project=firefox                 # one browser project
 npx playwright test --grep @smoke                      # fast subset (PR gate)
 npx playwright test --grep @regression                 # full regression set (nightly)
-npx playwright test --grep TC-ORDER-005                 # one case, by its sheet ID
+npx playwright test --grep TC-018                 # one case, by its sheet ID
 npm run test:ui                                         # UI specs only
 npm run test:api                                        # API specs only
 npm run test:perf                                        # performance spec only
@@ -113,11 +113,11 @@ source (not just observed behavior) — see `PLAN.md` Section 2 for the full wri
 
 1. **Order confirmation date is one month behind** — `purchaseOrder()` builds the date with
    `date.getMonth()` and never adds 1 (JS months are 0-indexed). Automated as
-   `TC-ORDER-006` in `tests/ui/order.spec.ts`, marked `test.fail()` so CI doesn't go red for a
+   `TC-019` in `tests/ui/order.spec.ts`, marked `test.fail()` so CI doesn't go red for a
    defect that isn't ours to fix — if DemoBlaze ever fixes it, the test flips to an _unexpected
    pass_, which is the signal to revisit.
 2. **An order can be placed with an empty cart** — `purchaseOrder()` never checks cart length.
-   Automated as `TC-ORDER-005`, same `test.fail()` treatment.
+   Automated as `TC-018`, same `test.fail()` treatment.
 
 Both are tagged `@known-defect` in addition to `@regression`, so they can be filtered in or out:
 `npx playwright test --grep @known-defect`.

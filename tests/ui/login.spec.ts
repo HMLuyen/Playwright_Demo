@@ -4,7 +4,7 @@ import { LoginModal } from '../../pages/LoginModal'
 import { LOGIN_TEST_ACCOUNT } from './login.testdata'
 
 test.describe('Login', () => {
-  test('TC-LOGIN-001: valid credentials log the user in', { tag: '@smoke' }, async ({ page }) => {
+  test('TC-001: valid credentials log the user in', { tag: '@smoke' }, async ({ page }) => {
     const homePage = new HomePage(page)
     const loginModal = new LoginModal(page)
     await homePage.goto()
@@ -15,7 +15,7 @@ test.describe('Login', () => {
   })
 
   test(
-    'TC-LOGIN-002: empty username and password shows validation alert',
+    'TC-002: empty username and password shows validation alert',
     { tag: '@regression' },
     async ({ page }) => {
       const homePage = new HomePage(page)
@@ -28,7 +28,7 @@ test.describe('Login', () => {
   )
 
   test(
-    'TC-LOGIN-003: unknown username shows "User does not exist."',
+    'TC-003: unknown username shows "User does not exist."',
     { tag: '@regression' },
     async ({ page }) => {
       const homePage = new HomePage(page)
@@ -42,7 +42,7 @@ test.describe('Login', () => {
   )
 
   test(
-    'TC-LOGIN-004: wrong password for an existing user shows "Wrong password."',
+    'TC-004: wrong password for an existing user shows "Wrong password."',
     { tag: '@regression' },
     async ({ page }) => {
       const homePage = new HomePage(page)
@@ -56,7 +56,7 @@ test.describe('Login', () => {
   )
 
   test(
-    'TC-LOGIN-008: SQL-injection-style username is treated as just another unknown user',
+    'TC-008: SQL-injection-style username is treated as just another unknown user',
     { tag: '@regression' },
     async ({ page }) => {
       const homePage = new HomePage(page)
