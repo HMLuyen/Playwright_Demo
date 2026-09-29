@@ -20,13 +20,6 @@ export interface PurchaseConfirmation {
   date: string
 }
 
-/**
- * The site joins the confirmation fields with literal "\n" in its source
- * (Id: X\nAmount: Y USD\nCard Number: Z\nName: W\nDate: D), which sweetalert
- * renders with no visible separator in .textContent() — fields run together
- * with zero whitespace between them. Parse by label boundary, not by splitting
- * on whitespace/newlines.
- */
 function parseConfirmationText(text: string): PurchaseConfirmation {
   const idMatch = text.match(/Id:\s*(\d+)/)
   const amountMatch = text.match(/Amount:\s*(\d+)\s*USD/)
@@ -67,7 +60,6 @@ export class PlaceOrderModal extends BaseModal {
     logger.step('Fill order form successfully')
   }
 
-  /** Missing Name/Card shows a native alert — use for the negative-path cases. */
   async submitExpectingDialog(): Promise<string> {
     const message = await captureDialog(this.page, async () => {
       await this.purchaseButton.click()
@@ -76,11 +68,6 @@ export class PlaceOrderModal extends BaseModal {
     return message
   }
 
-  /**
-   * A valid submission shows a SweetAlert confirmation panel, not a native dialog —
-   * confirmed live and from source (purchaseOrder() never checks cart length, so
-   * this also fires for an empty cart; see the known-defect tests).
-   */
   async submitExpectingConfirmation(): Promise<PurchaseConfirmation> {
     await this.purchaseButton.click()
     await this.confirmationPanel.getByText('Thank you for your purchase!').waitFor()

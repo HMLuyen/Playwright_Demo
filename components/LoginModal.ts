@@ -3,10 +3,6 @@ import { BaseModal } from './BaseModal'
 import { captureDialog } from '../utils/dialog'
 import { logger } from '../utils/logger'
 
-/**
- * Scoped to #logInModal because "Log in" and "Close" button names are duplicated
- * elsewhere on the page (e.g. the signup modal also has a "Close" button).
- */
 export class LoginModal extends BaseModal {
   private readonly loginModal: Locator = this.page.locator('#logInModal')
   private readonly usernameInput: Locator = this.loginModal.locator('#loginusername')

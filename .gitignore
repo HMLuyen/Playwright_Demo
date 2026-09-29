@@ -10,3 +10,6 @@ k6-summary.json
 # OS / editor junk
 .DS_Store
 ~$*.xlsx
+
+# Test-case documentation (not part of the automation code)
+test-cases/

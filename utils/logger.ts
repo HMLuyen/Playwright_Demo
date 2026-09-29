@@ -7,18 +7,13 @@ export interface Logger {
   error: (message: string, error: unknown, stackTrace?: boolean) => void
 }
 
-/**
- * Coerce an unknown thrown value into a human-readable string for logs.
- * Handles Error instances (most common), plain objects (JSON.stringify with a circular-ref
- * guard), and primitives — avoiding the `[object Object]` result from a naive `String(error)`.
- */
 export const formatError = (error: unknown): string => {
   if (error instanceof Error) return error.message
   if (typeof error === 'object' && error !== null) {
     try {
       return JSON.stringify(error)
     } catch {
-      // Circular reference or other stringify failure — fall through.
+      // Fall through to String(error)
     }
   }
   return String(error)

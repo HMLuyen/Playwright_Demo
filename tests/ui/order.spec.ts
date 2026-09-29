@@ -63,8 +63,6 @@ test.describe('Place Order — validation errors', () => {
       log.step('4. Click "Purchase"')
       const message = await placeOrderModal.submitExpectingDialog()
 
-      // Confirmed from source: a single `name == "" || creditcard == ""` check,
-      // so missing either field alone produces the identical combined message.
       log.step('5. Verify alert message')
       expect(message).toBe('Please fill out Name and Creditcard.')
     },
