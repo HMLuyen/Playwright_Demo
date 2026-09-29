@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test'
+import { Locator, Page, test } from '@playwright/test'
 import { captureDialog } from '../utils/dialog'
 
 /**
@@ -13,14 +13,18 @@ export class LoginModal {
   }
 
   async fill(username: string, password: string): Promise<void> {
-    await this.root.locator('#loginusername').fill(username)
-    await this.root.locator('#loginpassword').fill(password)
+    await test.step(`Fill login form (username: ${username})`, async () => {
+      await this.root.locator('#loginusername').fill(username)
+      await this.root.locator('#loginpassword').fill(password)
+    })
   }
 
   /** For the negative/edge cases: empty fields, unknown user, wrong password. */
   async submitExpectingDialog(): Promise<string> {
-    return captureDialog(this.page, async () => {
-      await this.root.getByRole('button', { name: 'Log in' }).click()
+    return test.step('Submit login, expect alert', async () => {
+      return captureDialog(this.page, async () => {
+        await this.root.getByRole('button', { name: 'Log in' }).click()
+      })
     })
   }
 
@@ -30,11 +34,13 @@ export class LoginModal {
    * can resolve before the async login call has even started.
    */
   async submitExpectingSuccess(): Promise<void> {
-    const loginResponse = this.page.waitForResponse(
-      (res) => res.url().includes('/login') && res.request().method() === 'POST',
-    )
-    await this.root.getByRole('button', { name: 'Log in' }).click()
-    await loginResponse
-    await this.page.waitForLoadState('load')
+    await test.step('Submit login, expect success', async () => {
+      const loginResponse = this.page.waitForResponse(
+        (res) => res.url().includes('/login') && res.request().method() === 'POST',
+      )
+      await this.root.getByRole('button', { name: 'Log in' }).click()
+      await loginResponse
+      await this.page.waitForLoadState('load')
+    })
   }
 }

@@ -33,7 +33,10 @@ test.describe('Place Order — validation errors', () => {
       await cartPage.goto()
       await cartPage.openPlaceOrder()
       const message = await placeOrderModal.submitExpectingDialog()
-      expect(message).toBe('Please fill out Name and Creditcard.')
+
+      await test.step('Verify alert message', async () => {
+        expect(message).toBe('Please fill out Name and Creditcard.')
+      })
     },
   )
 
@@ -49,7 +52,11 @@ test.describe('Place Order — validation errors', () => {
       await placeOrderModal.fill({ card: '4111111111111111' })
       const message = await placeOrderModal.submitExpectingDialog()
 
-      expect(message).toBe('Please fill out Name and Creditcard.')
+      // Confirmed from source: a single `name == "" || creditcard == ""` check,
+      // so missing either field alone produces the identical combined message.
+      await test.step('Verify alert message', async () => {
+        expect(message).toBe('Please fill out Name and Creditcard.')
+      })
     },
   )
 
@@ -64,7 +71,10 @@ test.describe('Place Order — validation errors', () => {
       await cartPage.openPlaceOrder()
       await placeOrderModal.fill({ name: 'Luha QA' })
       const message = await placeOrderModal.submitExpectingDialog()
-      expect(message).toBe('Please fill out Name and Creditcard.')
+
+      await test.step('Verify alert message', async () => {
+        expect(message).toBe('Please fill out Name and Creditcard.')
+      })
     },
   )
 })
@@ -99,10 +109,12 @@ test.describe('Place Order — placement', () => {
       await placeOrderModal.fill({ name: 'Luha QA', card: '4111111111111111' })
       const confirmation = await placeOrderModal.submitExpectingConfirmation()
 
-      expect(confirmation.name).toBe('Luha QA')
-      expect(confirmation.cardNumber).toBe('4111111111111111')
-      expect(confirmation.amount).toBe(SAMSUNG_GALAXY_S6.price)
-      expect(confirmation.id).toMatch(/^\d+$/)
+      await test.step('Verify order confirmation details', async () => {
+        expect(confirmation.name).toBe('Luha QA')
+        expect(confirmation.cardNumber).toBe('4111111111111111')
+        expect(confirmation.amount).toBe(SAMSUNG_GALAXY_S6.price)
+        expect(confirmation.id).toMatch(/^\d+$/)
+      })
     },
   )
 
@@ -124,9 +136,13 @@ test.describe('Place Order — placement', () => {
       await placeOrderModal.fill({ name: 'Date Bug Test', card: '4111111111111111' })
       const confirmation = await placeOrderModal.submitExpectingConfirmation()
 
-      const now = new Date()
-      const expectedDate = `${now.getUTCDate()}/${now.getUTCMonth() + 1}/${now.getUTCFullYear()}`
-      expect(confirmation.date).toBe(expectedDate)
+      await test.step('Verify confirmation date matches today (expected to fail)', async () => {
+        // Computed in UTC to match playwright.config.ts's timezoneId: 'UTC', so this
+        // stays deterministic regardless of the CI runner's local timezone.
+        const now = new Date()
+        const expectedDate = `${now.getUTCDate()}/${now.getUTCMonth() + 1}/${now.getUTCFullYear()}`
+        expect(confirmation.date).toBe(expectedDate)
+      })
     },
   )
 })
@@ -157,7 +173,9 @@ test.describe('Place Order — empty cart defect', () => {
       await placeOrderModal.fill({ name: 'Empty Cart Test', card: '4111111111111111' })
       const confirmation = await placeOrderModal.submitExpectingConfirmation()
 
-      expect(confirmation.amount).toBeGreaterThan(0)
+      await test.step('Verify order amount despite empty cart (expected to fail)', async () => {
+        expect(confirmation.amount).toBeGreaterThan(0)
+      })
     },
   )
 })

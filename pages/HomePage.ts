@@ -1,10 +1,12 @@
-import { Page, expect } from '@playwright/test'
+import { Page, expect, test } from '@playwright/test'
 
 export class HomePage {
   constructor(private readonly page: Page) {}
 
   async goto(): Promise<void> {
-    await this.page.goto('/')
+    await test.step('Go to home page', async () => {
+      await this.page.goto('/')
+    })
   }
 
   /** Mobile viewports collapse the navbar behind a toggler — confirmed live at 375x667. */
@@ -20,12 +22,16 @@ export class HomePage {
   }
 
   async openLoginModal(): Promise<void> {
-    await this.openMobileNavIfCollapsed()
-    await this.page.locator('#login2').click()
+    await test.step('Open login modal', async () => {
+      await this.openMobileNavIfCollapsed()
+      await this.page.locator('#login2').click()
+    })
   }
 
   async expectLoggedIn(username: string): Promise<void> {
-    await expect(this.page.locator('#nameofuser')).toHaveText(`Welcome ${username}`)
-    await expect(this.page.locator('#login2')).toBeHidden()
+    await test.step(`Verify logged in as ${username}`, async () => {
+      await expect(this.page.locator('#nameofuser')).toHaveText(`Welcome ${username}`)
+      await expect(this.page.locator('#login2')).toBeHidden()
+    })
   }
 }

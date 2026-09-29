@@ -9,14 +9,19 @@ test.describe('Performance tests', () => {
     { tag: ['@TC-020', '@regression'] },
     async ({ page }) => {
       await page.goto('/')
-      const timing = await page.evaluate(() => {
-        const [nav] = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[]
-        return {
-          domContentLoaded: nav.domContentLoadedEventEnd - nav.startTime,
-        }
+
+      const timing = await test.step('Measure DOMContentLoaded timing', async () => {
+        return page.evaluate(() => {
+          const [nav] = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[]
+          return {
+            domContentLoaded: nav.domContentLoadedEventEnd - nav.startTime,
+          }
+        })
       })
 
-      expect(timing.domContentLoaded).toBeLessThan(DOM_CONTENT_LOADED_BUDGET_MS)
+      await test.step('Verify timing is within budget', async () => {
+        expect(timing.domContentLoaded).toBeLessThan(DOM_CONTENT_LOADED_BUDGET_MS)
+      })
     },
   )
 })

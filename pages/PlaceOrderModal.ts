@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test'
+import { Locator, Page, test } from '@playwright/test'
 import { captureDialog } from '../utils/dialog'
 
 export interface OrderDetails {
@@ -48,18 +48,22 @@ export class PlaceOrderModal {
   }
 
   async fill(details: OrderDetails): Promise<void> {
-    if (details.name !== undefined) await this.root.locator('#name').fill(details.name)
-    if (details.country !== undefined) await this.root.locator('#country').fill(details.country)
-    if (details.city !== undefined) await this.root.locator('#city').fill(details.city)
-    if (details.card !== undefined) await this.root.locator('#card').fill(details.card)
-    if (details.month !== undefined) await this.root.locator('#month').fill(details.month)
-    if (details.year !== undefined) await this.root.locator('#year').fill(details.year)
+    await test.step('Fill order form', async () => {
+      if (details.name !== undefined) await this.root.locator('#name').fill(details.name)
+      if (details.country !== undefined) await this.root.locator('#country').fill(details.country)
+      if (details.city !== undefined) await this.root.locator('#city').fill(details.city)
+      if (details.card !== undefined) await this.root.locator('#card').fill(details.card)
+      if (details.month !== undefined) await this.root.locator('#month').fill(details.month)
+      if (details.year !== undefined) await this.root.locator('#year').fill(details.year)
+    })
   }
 
   /** Missing Name/Card shows a native alert — use for the negative-path cases. */
   async submitExpectingDialog(): Promise<string> {
-    return captureDialog(this.page, async () => {
-      await this.root.getByRole('button', { name: 'Purchase' }).click()
+    return test.step('Submit order, expect alert', async () => {
+      return captureDialog(this.page, async () => {
+        await this.root.getByRole('button', { name: 'Purchase' }).click()
+      })
     })
   }
 
@@ -69,11 +73,13 @@ export class PlaceOrderModal {
    * this also fires for an empty cart; see the known-defect tests).
    */
   async submitExpectingConfirmation(): Promise<PurchaseConfirmation> {
-    await this.root.getByRole('button', { name: 'Purchase' }).click()
-    const confirmation = this.page.locator('.sweet-alert')
-    await confirmation.getByText('Thank you for your purchase!').waitFor()
-    const text = (await confirmation.locator('p').textContent()) ?? ''
-    return parseConfirmationText(text)
+    return test.step('Submit order, expect confirmation', async () => {
+      await this.root.getByRole('button', { name: 'Purchase' }).click()
+      const confirmation = this.page.locator('.sweet-alert')
+      await confirmation.getByText('Thank you for your purchase!').waitFor()
+      const text = (await confirmation.locator('p').textContent()) ?? ''
+      return parseConfirmationText(text)
+    })
   }
 
   async confirmOk(): Promise<void> {

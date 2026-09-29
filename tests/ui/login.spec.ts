@@ -23,7 +23,9 @@ test.describe('Login', () => {
       await homePage.goto()
       await homePage.openLoginModal()
       const message = await loginModal.submitExpectingDialog()
-      expect(message).toBe('Please fill out Username and Password.')
+      await test.step('Verify alert message', async () => {
+        expect(message).toBe('Please fill out Username and Password.')
+      })
     },
   )
 
@@ -37,7 +39,9 @@ test.describe('Login', () => {
       await homePage.openLoginModal()
       await loginModal.fill(`no_such_user_${Date.now()}`, 'anyPassword123')
       const message = await loginModal.submitExpectingDialog()
-      expect(message).toBe('User does not exist.')
+      await test.step('Verify alert message', async () => {
+        expect(message).toBe('User does not exist.')
+      })
     },
   )
 
@@ -51,7 +55,9 @@ test.describe('Login', () => {
       await homePage.openLoginModal()
       await loginModal.fill(LOGIN_TEST_ACCOUNT.username, 'DefinitelyWrongPassword!')
       const message = await loginModal.submitExpectingDialog()
-      expect(message).toBe('Wrong password.')
+      await test.step('Verify alert message', async () => {
+        expect(message).toBe('Wrong password.')
+      })
     },
   )
 
@@ -65,7 +71,9 @@ test.describe('Login', () => {
       await homePage.openLoginModal()
       await loginModal.fill(`' OR '1'='1`, 'anyPassword123')
       const message = await loginModal.submitExpectingDialog()
-      expect(message).toBe('User does not exist.')
+      await test.step('Verify alert message', async () => {
+        expect(message).toBe('User does not exist.')
+      })
     },
   )
 })

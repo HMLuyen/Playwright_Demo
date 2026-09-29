@@ -1,4 +1,4 @@
-import { Locator, Page, expect } from '@playwright/test'
+import { Locator, Page, expect, test } from '@playwright/test'
 
 export class CartPage {
   readonly rows: Locator
@@ -8,15 +8,21 @@ export class CartPage {
   }
 
   async goto(): Promise<void> {
-    await this.page.goto('/cart.html')
+    await test.step('Go to cart page', async () => {
+      await this.page.goto('/cart.html')
+    })
   }
 
   /** Rows load incrementally — wait for the exact expected count, not just the first response. */
   async waitForRowCount(expectedCount: number): Promise<void> {
-    await expect(this.rows).toHaveCount(expectedCount, { timeout: 15000 })
+    await test.step(`Wait for cart to show ${expectedCount} row(s)`, async () => {
+      await expect(this.rows).toHaveCount(expectedCount, { timeout: 15000 })
+    })
   }
 
   async openPlaceOrder(): Promise<void> {
-    await this.page.getByRole('button', { name: 'Place Order' }).click()
+    await test.step('Open Place Order modal', async () => {
+      await this.page.getByRole('button', { name: 'Place Order' }).click()
+    })
   }
 }

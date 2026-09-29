@@ -10,20 +10,26 @@ test.describe('Login via API', () => {
   })
 
   test('valid login returns a token', { tag: ['@TC-021', '@smoke'] }, async ({ apiClient }) => {
-    const token = await apiClient.login(API_TEST_ACCOUNT)
-    expect(token.length).toBeGreaterThan(0)
+    const token = await test.step('Login with valid credentials', async () => {
+      return apiClient.login(API_TEST_ACCOUNT)
+    })
+    await test.step('Verify a token was returned', async () => {
+      expect(token.length).toBeGreaterThan(0)
+    })
   })
 
   test(
     'wrong password rejects with "Wrong password."',
     { tag: ['@TC-022', '@regression'] },
     async ({ apiClient }) => {
-      await expect(
-        apiClient.login({
-          username: API_TEST_ACCOUNT.username,
-          password: 'DefinitelyWrongPassword!',
-        }),
-      ).rejects.toThrow('Wrong password.')
+      await test.step('Attempt login with wrong password', async () => {
+        await expect(
+          apiClient.login({
+            username: API_TEST_ACCOUNT.username,
+            password: 'DefinitelyWrongPassword!',
+          }),
+        ).rejects.toThrow('Wrong password.')
+      })
     },
   )
 
@@ -31,9 +37,11 @@ test.describe('Login via API', () => {
     'unknown username rejects with "User does not exist."',
     { tag: ['@TC-023', '@regression'] },
     async ({ apiClient }) => {
-      await expect(
-        apiClient.login({ username: `no_such_user_${Date.now()}`, password: 'anyPassword123' }),
-      ).rejects.toThrow('User does not exist.')
+      await test.step('Attempt login with unknown username', async () => {
+        await expect(
+          apiClient.login({ username: `no_such_user_${Date.now()}`, password: 'anyPassword123' }),
+        ).rejects.toThrow('User does not exist.')
+      })
     },
   )
 
@@ -49,13 +57,18 @@ test.describe('Login via API', () => {
       const encoded = Buffer.from(rawPassword, 'utf-8').toString('base64')
       expect(encoded).not.toBe(rawPassword)
 
-      await request.post(`${API_URL}/signup`, { data: { username, password: encoded } })
-      const loginRes = await request.post(`${API_URL}/login`, {
-        data: { username, password: encoded },
+      await test.step('Sign up new user with base64-encoded password', async () => {
+        await request.post(`${API_URL}/signup`, { data: { username, password: encoded } })
       })
-      const body = await loginRes.json()
-      expect(typeof body).toBe('string')
-      expect(body).toContain('Auth_token: ')
+
+      await test.step('Login and verify response contains a token', async () => {
+        const loginRes = await request.post(`${API_URL}/login`, {
+          data: { username, password: encoded },
+        })
+        const body = await loginRes.json()
+        expect(typeof body).toBe('string')
+        expect(body).toContain('Auth_token: ')
+      })
     },
   )
 })

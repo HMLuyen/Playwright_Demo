@@ -1,12 +1,14 @@
-import { Page } from '@playwright/test'
+import { Page, test } from '@playwright/test'
 import { captureDialog } from '../utils/dialog'
 
 export class ProductPage {
   constructor(private readonly page: Page) {}
 
   async goto(productId: number): Promise<void> {
-    await this.page.goto(`/prod.html?idp_=${productId}`)
-    await this.page.locator('.name').waitFor({ state: 'visible' })
+    await test.step(`Go to product page (id=${productId})`, async () => {
+      await this.page.goto(`/prod.html?idp_=${productId}`)
+      await this.page.locator('.name').waitFor({ state: 'visible' })
+    })
   }
 
   async getTitle(): Promise<string> {
@@ -23,8 +25,10 @@ export class ProductPage {
    * between the two, confirmed from source, not a rendering artifact.
    */
   async addToCart(): Promise<string> {
-    return captureDialog(this.page, async () => {
-      await this.page.getByRole('link', { name: 'Add to cart' }).click()
+    return test.step('Add product to cart', async () => {
+      return captureDialog(this.page, async () => {
+        await this.page.getByRole('link', { name: 'Add to cart' }).click()
+      })
     })
   }
 }
