@@ -17,7 +17,14 @@ export const options = {
 }
 
 export function setup() {
-  return { encodedPassword: encoding.b64encode(K6_TEST_ACCOUNT.password) }
+  const encodedPassword = encoding.b64encode(K6_TEST_ACCOUNT.password)
+  // Demoblaze can reset its data and has no delete-account API, so signup is idempotent setup.
+  http.post(
+    `${BASE_URL}/signup`,
+    JSON.stringify({ username: K6_TEST_ACCOUNT.username, password: encodedPassword }),
+    { headers: { 'Content-Type': 'application/json' } },
+  )
+  return { encodedPassword }
 }
 
 export default function (data) {

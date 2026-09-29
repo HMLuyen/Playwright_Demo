@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/ui-fixtures'
+import { test, expect } from '../../fixtures/base-test'
 import { ProductPage } from '../../pages/ProductPage'
 import { CartPage } from '../../pages/CartPage'
 import { PlaceOrderModal } from '../../components/PlaceOrderModal'
@@ -13,9 +13,14 @@ import {
 test.describe('Place Order — validation errors', () => {
   test.describe.configure({ mode: 'serial' })
 
-  test.beforeEach(async ({ page, context, workerApiClient, baseURL }) => {
+  test.beforeAll(async ({ apiClient }) => {
+    // Demoblaze can reset its data and has no delete-account API, so signup is idempotent setup.
+    await apiClient.signup(ORDER_VALIDATION_ACCOUNT)
+  })
+
+  test.beforeEach(async ({ page, context, apiClient, baseURL }) => {
     await loginViaApi({
-      client: workerApiClient,
+      client: apiClient,
       context,
       page,
       baseURL: baseURL!,
@@ -96,9 +101,14 @@ test.describe('Place Order — validation errors', () => {
 test.describe('Place Order — placement', () => {
   test.describe.configure({ mode: 'serial' })
 
-  test.beforeEach(async ({ page, context, workerApiClient, baseURL }) => {
+  test.beforeAll(async ({ apiClient }) => {
+    // Demoblaze can reset its data and has no delete-account API, so signup is idempotent setup.
+    await apiClient.signup(ORDER_PLACEMENT_ACCOUNT)
+  })
+
+  test.beforeEach(async ({ page, context, apiClient, baseURL }) => {
     await loginViaApi({
-      client: workerApiClient,
+      client: apiClient,
       context,
       page,
       baseURL: baseURL!,
@@ -177,9 +187,14 @@ test.describe('Place Order — placement', () => {
 })
 
 test.describe('Place Order — empty cart defect', () => {
-  test.beforeEach(async ({ page, context, workerApiClient, baseURL }) => {
+  test.beforeAll(async ({ apiClient }) => {
+    // Demoblaze can reset its data and has no delete-account API, so signup is idempotent setup.
+    await apiClient.signup(ORDER_EMPTYCART_ACCOUNT)
+  })
+
+  test.beforeEach(async ({ page, context, apiClient, baseURL }) => {
     await loginViaApi({
-      client: workerApiClient,
+      client: apiClient,
       context,
       page,
       baseURL: baseURL!,

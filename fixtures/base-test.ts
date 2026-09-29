@@ -8,14 +8,14 @@ interface TestFixtures {
 }
 
 interface WorkerFixtures {
-  workerApiClient: DemoblazeClient
+  apiClient: DemoblazeClient
 }
 
 export const test = base.extend<TestFixtures, WorkerFixtures>({
   log: async ({}, use) => {
     await use(logger)
   },
-  workerApiClient: [
+  apiClient: [
     async ({ playwright }, use) => {
       const requestContext = await playwright.request.newContext({ baseURL: API_URL })
       await use(new DemoblazeClient(requestContext, API_URL))

@@ -1,9 +1,14 @@
-import { test, expect } from '../../fixtures/ui-fixtures'
+import { test, expect } from '../../fixtures/base-test'
 import { HomePage } from '../../pages/HomePage'
 import { LoginModal } from '../../components/LoginModal'
 import { LOGIN_TEST_ACCOUNT } from './login.testdata'
 
 test.describe('Login', () => {
+  test.beforeAll(async ({ apiClient }) => {
+    // Demoblaze can reset its data and has no delete-account API, so signup is idempotent setup.
+    await apiClient.signup(LOGIN_TEST_ACCOUNT)
+  })
+
   test(
     'valid credentials log the user in',
     { tag: ['@TC-001', '@smoke'] },

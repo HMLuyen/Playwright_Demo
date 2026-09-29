@@ -21,8 +21,7 @@ Built with Playwright + TypeScript.
 ├── components/                       # Component Objects
 ├── api/                              # DemoblazeClient - thin wrapper over the site's API
 ├── fixtures/
-│   ├── ui-fixtures.ts                # Fixture for UI test
-│   └── api-fixtures.ts               # Fixture for API test
+│   └── base-test.ts                  # Base test with shared fixtures: log, apiClient
 ├── utils/                            # For helper utils. e.g. login-via-API helper, username generator, etc
 ├── k6/                               # Standalone k6 load test (separate tool, separate runtime)
 ├── playwright.config.ts              # Project configuration

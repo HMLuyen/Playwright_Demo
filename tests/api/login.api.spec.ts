@@ -1,11 +1,11 @@
-import { test, expect } from '../../fixtures/api-fixtures'
+import { test, expect } from '../../fixtures/base-test'
 import { generateWorkerUsername } from '../../utils/users'
 import { API_URL } from '../../utils/env'
 import { API_TEST_ACCOUNT } from './login.api.testdata'
 
 test.describe('Login via API', () => {
   test.beforeAll(async ({ apiClient }) => {
-    // Make sure the account exists before running the tests.
+    // Demoblaze can reset its data and has no delete-account API, so signup is idempotent setup.
     await apiClient.signup(API_TEST_ACCOUNT)
   })
 
