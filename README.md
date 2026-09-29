@@ -1,12 +1,8 @@
 # Playwright Demo — DemoBlaze Automation
 
-Automation demo for [DemoBlaze](https://www.demoblaze.com/), covering exactly the brief:
+Automation demo for [DemoBlaze](https://www.demoblaze.com/)
 
-- Logging in with valid credentials
-- Adding a product to the cart, then placing an order
-
-Built with Playwright + TypeScript. See [`PLAN.md`](PLAN.md) for the full design plan, including
-every site behavior verified live against the real site before any code was written.
+Built with Playwright + TypeScript.
 
 ## Framework structure
 

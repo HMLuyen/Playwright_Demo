@@ -18,7 +18,7 @@ export abstract class BasePage {
     })
   }
 
-  /** Mobile viewports collapse the navbar behind a toggler — confirmed live at 375x667. */
+  /** Mobile viewports collapse the navbar behind a toggler. */
   private async openMobileNavIfCollapsed(): Promise<void> {
     if (await this.navbarToggler.isVisible().catch(() => false)) {
       const loginVisible = await this.loginLink.isVisible().catch(() => false)
@@ -28,7 +28,7 @@ export abstract class BasePage {
     }
   }
 
-  /** Navbar chrome — present on every page, not just Home, so it lives here. */
+  /** Navbar chrome — present on every page. */
   async openLoginModal(): Promise<void> {
     await test.step('Open login modal', async () => {
       await this.openMobileNavIfCollapsed()

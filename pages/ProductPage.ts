@@ -22,11 +22,6 @@ export class ProductPage extends BasePage {
     return (await this.priceContainer.textContent())?.trim() ?? ''
   }
 
-  /**
-   * Returns the alert message. Logged-in path shows "Product added." (with a period);
-   * the guest path shows "Product added" (no period) — a real copy inconsistency
-   * between the two, confirmed from source, not a rendering artifact.
-   */
   async addToCart(): Promise<string> {
     return test.step('Add product to cart', async () => {
       return captureDialog(this.page, async () => {
