@@ -1,20 +1,20 @@
-import { Page } from '@playwright/test';
-import { captureDialog } from '../utils/dialog';
+import { Page } from '@playwright/test'
+import { captureDialog } from '../utils/dialog'
 
 export class ProductPage {
   constructor(private readonly page: Page) {}
 
   async goto(productId: number): Promise<void> {
-    await this.page.goto(`/prod.html?idp_=${productId}`);
-    await this.page.locator('.name').waitFor({ state: 'visible' });
+    await this.page.goto(`/prod.html?idp_=${productId}`)
+    await this.page.locator('.name').waitFor({ state: 'visible' })
   }
 
   async getTitle(): Promise<string> {
-    return (await this.page.locator('.name').textContent())?.trim() ?? '';
+    return (await this.page.locator('.name').textContent())?.trim() ?? ''
   }
 
   async getPriceText(): Promise<string> {
-    return (await this.page.locator('.price-container').textContent())?.trim() ?? '';
+    return (await this.page.locator('.price-container').textContent())?.trim() ?? ''
   }
 
   /**
@@ -24,7 +24,7 @@ export class ProductPage {
    */
   async addToCart(): Promise<string> {
     return captureDialog(this.page, async () => {
-      await this.page.getByRole('link', { name: 'Add to cart' }).click();
-    });
+      await this.page.getByRole('link', { name: 'Add to cart' }).click()
+    })
   }
 }

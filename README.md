@@ -13,34 +13,41 @@ every site behavior verified live against the real site before any code was writ
 ```
 ├── tests/
 │   ├── ui/
-│   │   ├── login.spec.ts        # Login — Page Object Model, TC-ID'd test titles
-│   │   ├── order.spec.ts        # Add to cart + Place Order (cart is a setup step here, not its own spec)
-│   │   └── order.testdata.ts    # product data used only by order.spec.ts
+│   │   ├── login.spec.ts        # Login — constructs its own page objects per test
+│   │   ├── login.testdata.ts    # fixed, pre-existing account for login.spec.ts only
+│   │   ├── order.spec.ts        # Add to cart + Place Order, own beforeEach login
+│   │   └── order.testdata.ts    # product data + fixed account for order.spec.ts only
 │   ├── api/
-│   │   ├── login.api.spec.ts    # Login/Signup/Check API tests
+│   │   ├── login.api.spec.ts    # Login API tests
 │   │   └── testdata.ts          # fixed shared API test account
 │   └── perf/        # Browser-level navigation-timing budget check
 ├── pages/           # Page Object Model — one class per page/modal
 ├── api/             # DemoblazeClient — thin wrapper over the site's API
 ├── fixtures/
-│   ├── ui-fixtures.ts   # per-worker account (cart isolation), page objects
+│   ├── ui-fixtures.ts   # just workerApiClient — no page objects, no account
 │   └── api-fixtures.ts  # single fixed account, apiClient
-├── utils/           # Cross-cutting helpers: dialog handling, username generator
+├── utils/           # dialog handling, env config, login-via-API helper, username generator
 ├── k6/              # Standalone k6 load test (separate tool, separate runtime)
 ├── test-cases/      # cases.json (source of truth, all 19 cases) + generated .xlsx sheet
 └── .github/workflows/tests.yml
 ```
 
 **Why this shape:**
+
 - **Page Object Model** (`pages/`) isolates selectors from test logic — a selector change touches
   one file, not every spec.
-- **Test data lives next to the spec that uses it** (`tests/ui/order.testdata.ts`,
+- **Page objects are constructed inside each test, not injected via fixture.** Wiring every POM
+  into a shared fixture doesn't scale as more spec files get added — each spec just does
+  `new CartPage(page)` for what it actually needs.
+- **No shared login fixture.** `login.spec.ts` and `order.spec.ts` each use their own fixed,
+  pre-existing account (`tests/ui/login.testdata.ts`, `tests/ui/order.testdata.ts`) — no signup
+  step, no per-worker generated username. `order.spec.ts`'s `beforeEach` logs in via
+  `utils/auth.ts`'s `loginViaApi()` (API login + cookie injection), reusing the worker-scoped
+  `workerApiClient` from `ui-fixtures.ts`. A future spec needing its own distinct user just adds
+  its own `testdata.ts` + `beforeEach` — it's never forced to share another spec's account.
+- **Test data lives next to the spec that uses it** (`tests/ui/*.testdata.ts`,
   `tests/api/testdata.ts`), not a shared `data/` folder or `.env` — keeps each suite's data
   self-contained as more specs get added later.
-- **`fixtures/` is split by account strategy, not just UI vs. API**: `ui-fixtures.ts` gives Login/
-  Order tests a unique per-worker account (cart state is mutated, so workers can't share one);
-  `api-fixtures.ts` gives API tests one fixed, pre-existing account (`test_userApi`) shared by
-  every worker — safe because API tests only assert responses, never mutate that account's state.
 - **`k6/`** lives outside `tests/` deliberately — it's a separate runtime (its own JS engine, no
   `node_modules` access) and Playwright's test runner would otherwise try to pick it up as a spec.
 - **`test-cases/cases.json`** documents all 19 cases (functional/edge/negative) even though only
@@ -59,6 +66,17 @@ npx playwright install --with-deps
 ```
 
 Config (`BASE_URL`, `API_URL`, `WORKERS`, `RETRIES`, `HEADLESS`) has working defaults in `utils/env.ts`/`playwright.config.ts`, and overrides via real environment variables (shell or CI).
+
+**Before running the UI suite:** the fixed accounts in `tests/ui/login.testdata.ts`
+(`testUserLogin`) and `tests/ui/order.testdata.ts` (`testUserOrder`) must already be signed up on
+the real site — there's no signup step in the test code. Create them once, e.g.:
+
+```bash
+curl -s -X POST https://api.demoblaze.com/signup \
+  -H "Content-Type: application/json" \
+  -d '{"username":"testUserLogin","password":"'"$(echo -n 'DemoPass123!' | base64)"'"}'
+# repeat with "testUserOrder"
+```
 
 ## Run commands
 
@@ -81,9 +99,11 @@ HEADLESS=false npx playwright test --project=chromium   # override any config de
 2. Regenerate `test-cases/demoblaze-test-cases.xlsx` from the updated JSON.
 3. If the flow needs new page interactions, add/extend a class in `pages/`.
 4. If it needs new test data, add a `testdata.ts` next to the new spec file — don't add to a
-   shared `data/` folder or `.env`.
-5. Write the spec in the matching `tests/{ui,api,perf}/` folder, with the test title starting
-   with the TC ID from step 1.
+   shared `data/` folder or `.env`. If it needs a logged-in user, use a fixed, pre-existing
+   account in that file (no signup step) — don't reuse another spec's account.
+5. Write the spec in the matching `tests/{ui,api,perf}/` folder: construct the page objects you
+   need directly inside the test (`new CartPage(page)`), don't add them to the shared fixture.
+   Test title starts with the TC ID from step 1.
 6. Tag it `@smoke` (fast, high-value path) or `@regression` (everything else).
 
 ## Known defects
@@ -94,8 +114,8 @@ source (not just observed behavior) — see `PLAN.md` Section 2 for the full wri
 1. **Order confirmation date is one month behind** — `purchaseOrder()` builds the date with
    `date.getMonth()` and never adds 1 (JS months are 0-indexed). Automated as
    `TC-ORDER-006` in `tests/ui/order.spec.ts`, marked `test.fail()` so CI doesn't go red for a
-   defect that isn't ours to fix — if DemoBlaze ever fixes it, the test flips to an *unexpected
-   pass*, which is the signal to revisit.
+   defect that isn't ours to fix — if DemoBlaze ever fixes it, the test flips to an _unexpected
+   pass_, which is the signal to revisit.
 2. **An order can be placed with an empty cart** — `purchaseOrder()` never checks cart length.
    Automated as `TC-ORDER-005`, same `test.fail()` treatment.
 
@@ -105,6 +125,7 @@ Both are tagged `@known-defect` in addition to `@regression`, so they can be fil
 ## CI
 
 `.github/workflows/tests.yml`:
+
 - **On every pull request:** `@smoke` tests across chromium/firefox/webkit.
 - **Nightly (and manual `workflow_dispatch`):** full `@regression` set across the same 3 browsers.
 - **k6 runs on manual `workflow_dispatch` only** — it's a load test against a public third-party

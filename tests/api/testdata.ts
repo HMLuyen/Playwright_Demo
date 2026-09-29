@@ -1,5 +1,5 @@
-/** Fixed shared account for API tests — no per-worker generation needed. */
+/** Fixed shared account for API tests. */
 export const API_TEST_ACCOUNT = {
-  username: 'test_userApi',
+  username: 'testUserApi',
   password: 'DemoPass123!',
-};
+}

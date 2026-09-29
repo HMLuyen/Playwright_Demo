@@ -1,21 +1,21 @@
-import { Locator, Page } from '@playwright/test';
-import { captureDialog } from '../utils/dialog';
+import { Locator, Page } from '@playwright/test'
+import { captureDialog } from '../utils/dialog'
 
 export interface OrderDetails {
-  name?: string;
-  country?: string;
-  city?: string;
-  card?: string;
-  month?: string;
-  year?: string;
+  name?: string
+  country?: string
+  city?: string
+  card?: string
+  month?: string
+  year?: string
 }
 
 export interface PurchaseConfirmation {
-  id: string;
-  amount: number;
-  cardNumber: string;
-  name: string;
-  date: string;
+  id: string
+  amount: number
+  cardNumber: string
+  name: string
+  date: string
 }
 
 /**
@@ -26,41 +26,41 @@ export interface PurchaseConfirmation {
  * on whitespace/newlines.
  */
 function parseConfirmationText(text: string): PurchaseConfirmation {
-  const idMatch = text.match(/Id:\s*(\d+)/);
-  const amountMatch = text.match(/Amount:\s*(\d+)\s*USD/);
-  const cardMatch = text.match(/Card Number:\s*([\s\S]*?)Name:/);
-  const nameMatch = text.match(/Name:\s*([\s\S]*?)Date:/);
-  const dateMatch = text.match(/Date:\s*([\s\S]*)$/);
+  const idMatch = text.match(/Id:\s*(\d+)/)
+  const amountMatch = text.match(/Amount:\s*(\d+)\s*USD/)
+  const cardMatch = text.match(/Card Number:\s*([\s\S]*?)Name:/)
+  const nameMatch = text.match(/Name:\s*([\s\S]*?)Date:/)
+  const dateMatch = text.match(/Date:\s*([\s\S]*)$/)
   return {
     id: idMatch?.[1] ?? '',
     amount: amountMatch ? parseInt(amountMatch[1], 10) : NaN,
     cardNumber: cardMatch?.[1]?.trim() ?? '',
     name: nameMatch?.[1]?.trim() ?? '',
     date: dateMatch?.[1]?.trim() ?? '',
-  };
+  }
 }
 
 export class PlaceOrderModal {
-  private readonly root: Locator;
+  private readonly root: Locator
 
   constructor(private readonly page: Page) {
-    this.root = page.locator('#orderModal');
+    this.root = page.locator('#orderModal')
   }
 
   async fill(details: OrderDetails): Promise<void> {
-    if (details.name !== undefined) await this.root.locator('#name').fill(details.name);
-    if (details.country !== undefined) await this.root.locator('#country').fill(details.country);
-    if (details.city !== undefined) await this.root.locator('#city').fill(details.city);
-    if (details.card !== undefined) await this.root.locator('#card').fill(details.card);
-    if (details.month !== undefined) await this.root.locator('#month').fill(details.month);
-    if (details.year !== undefined) await this.root.locator('#year').fill(details.year);
+    if (details.name !== undefined) await this.root.locator('#name').fill(details.name)
+    if (details.country !== undefined) await this.root.locator('#country').fill(details.country)
+    if (details.city !== undefined) await this.root.locator('#city').fill(details.city)
+    if (details.card !== undefined) await this.root.locator('#card').fill(details.card)
+    if (details.month !== undefined) await this.root.locator('#month').fill(details.month)
+    if (details.year !== undefined) await this.root.locator('#year').fill(details.year)
   }
 
   /** Missing Name/Card shows a native alert — use for the negative-path cases. */
   async submitExpectingDialog(): Promise<string> {
     return captureDialog(this.page, async () => {
-      await this.root.getByRole('button', { name: 'Purchase' }).click();
-    });
+      await this.root.getByRole('button', { name: 'Purchase' }).click()
+    })
   }
 
   /**
@@ -69,14 +69,14 @@ export class PlaceOrderModal {
    * this also fires for an empty cart; see the known-defect tests).
    */
   async submitExpectingConfirmation(): Promise<PurchaseConfirmation> {
-    await this.root.getByRole('button', { name: 'Purchase' }).click();
-    const confirmation = this.page.locator('.sweet-alert');
-    await confirmation.getByText('Thank you for your purchase!').waitFor();
-    const text = (await confirmation.locator('p').textContent()) ?? '';
-    return parseConfirmationText(text);
+    await this.root.getByRole('button', { name: 'Purchase' }).click()
+    const confirmation = this.page.locator('.sweet-alert')
+    await confirmation.getByText('Thank you for your purchase!').waitFor()
+    const text = (await confirmation.locator('p').textContent()) ?? ''
+    return parseConfirmationText(text)
   }
 
   async confirmOk(): Promise<void> {
-    await this.page.getByRole('button', { name: 'OK' }).click();
+    await this.page.getByRole('button', { name: 'OK' }).click()
   }
 }

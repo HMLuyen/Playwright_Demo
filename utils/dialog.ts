@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page } from '@playwright/test'
 
 /**
  * DemoBlaze uses native alert() for almost all feedback. Playwright auto-dismisses
@@ -7,11 +7,11 @@ import { Page } from '@playwright/test';
  * inside the click and blocks page script execution until dismissed).
  */
 export async function captureDialog(page: Page, trigger: () => Promise<void>): Promise<string> {
-  let message = '';
+  let message = ''
   page.once('dialog', async (dialog) => {
-    message = dialog.message();
-    await dialog.accept();
-  });
-  await trigger();
-  return message;
+    message = dialog.message()
+    await dialog.accept()
+  })
+  await trigger()
+  return message
 }

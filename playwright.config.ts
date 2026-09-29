@@ -1,9 +1,9 @@
-import { defineConfig, devices } from '@playwright/test';
-import { BASE_URL } from './utils/env';
+import { defineConfig, devices } from '@playwright/test'
+import { BASE_URL } from './utils/env'
 
-const HEADLESS = process.env.HEADLESS !== 'false';
-const WORKERS = process.env.WORKERS ? Number(process.env.WORKERS) : undefined;
-const RETRIES = process.env.RETRIES ? Number(process.env.RETRIES) : (process.env.CI ? 1 : 0);
+const HEADLESS = process.env.HEADLESS !== 'false'
+const WORKERS = process.env.WORKERS ? Number(process.env.WORKERS) : undefined
+const RETRIES = process.env.RETRIES ? Number(process.env.RETRIES) : process.env.CI ? 1 : 0
 
 export default defineConfig({
   testDir: './tests',
@@ -31,4 +31,4 @@ export default defineConfig({
     { name: 'Mobile Chrome', use: { ...devices['Pixel 5'] } },
     { name: 'Mobile Safari', use: { ...devices['iPhone 13'] } },
   ],
-});
+})
