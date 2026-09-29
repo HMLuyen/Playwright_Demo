@@ -46,7 +46,7 @@ Config (`BASE_URL`, `API_URL`, `WORKERS`, `RETRIES`, `HEADLESS`) has working def
 ## Run command examples
 
 ```bash
-npx playwright test                                     # full suite, all 5 projects
+npx playwright test                                     # full suite, both browsers
 npx playwright test --project=firefox                   # one browser project
 npx playwright test --grep @smoke                       # fast subset (PR gate)
 npx playwright test --grep @regression                  # full regression set (nightly)
@@ -62,8 +62,8 @@ HEADLESS=false npx playwright test --project=chromium   # override any config de
 
 `.github/workflows/tests.yml`:
 
-- **On every pull request:** `@smoke` tests across chromium/firefox/webkit.
-- **Nightly (and manual `workflow_dispatch`):** full `@regression` set across the same 3 browsers.
+- **On every pull request:** `@smoke` tests across chromium/firefox.
+- **Nightly (and manual `workflow_dispatch`):** full `@regression` set across the same 2 browsers.
 - **k6 runs on manual `workflow_dispatch` only** - it's a load test against a public third-party
   site we don't own, so it doesn't run automatically on a schedule or on PRs.
 - The HTML report and k6 summary are uploaded as build artifacts on every run.

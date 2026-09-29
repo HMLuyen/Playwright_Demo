@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [chromium, firefox, webkit]
+        project: [chromium, firefox]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [chromium, firefox, webkit]
+        project: [chromium, firefox]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup

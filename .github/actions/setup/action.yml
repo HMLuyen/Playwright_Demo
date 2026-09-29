@@ -3,7 +3,7 @@ description: Install Node, npm dependencies, and Playwright browsers
 
 inputs:
   browser:
-    description: Playwright browser to install (chromium, firefox, webkit). Empty installs all.
+    description: Playwright browser to install (chromium, firefox). Empty installs all.
     required: false
     default: ''
 

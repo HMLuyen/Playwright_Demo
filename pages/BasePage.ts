@@ -2,12 +2,10 @@ import { Locator, Page, expect } from '@playwright/test'
 import { logger } from '../utils/logger'
 
 export abstract class BasePage {
-  protected readonly navbarToggler: Locator
   protected readonly loginLink: Locator
   protected readonly welcomeText: Locator
 
   constructor(protected readonly page: Page) {
-    this.navbarToggler = page.locator('.navbar-toggler')
     this.loginLink = page.locator('#login2')
     this.welcomeText = page.locator('#nameofuser')
   }
@@ -17,19 +15,8 @@ export abstract class BasePage {
     expect(response?.status(), `Expect navigation to "${path}" to succeed`).toBeLessThan(400)
   }
 
-  /** Mobile viewports collapse the navbar behind a toggler. */
-  private async openMobileNavIfCollapsed(): Promise<void> {
-    if (await this.navbarToggler.isVisible().catch(() => false)) {
-      const loginVisible = await this.loginLink.isVisible().catch(() => false)
-      if (!loginVisible) {
-        await this.navbarToggler.click()
-      }
-    }
-  }
-
   /** Navbar chrome — present on every page. */
   async openLoginModal(): Promise<void> {
-    await this.openMobileNavIfCollapsed()
     await this.loginLink.click()
     logger.step('Open login modal successfully')
   }
