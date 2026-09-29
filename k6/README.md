@@ -27,7 +27,7 @@ brew install k6          # macOS
 k6 run k6/login-load-test.js
 ```
 
-Override defaults (5 VUs, 30s) at the CLI:
+Override defaults (2 VUs, 10s) at the CLI:
 
 ```bash
 k6 run -e VUS=10 -e DURATION=60s k6/login-load-test.js

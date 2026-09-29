@@ -6,7 +6,7 @@ export interface FixedAccount {
   password: string
 }
 
-/** Logs a pre-existing account in via the API and injects the session cookie. No signup — the account must already exist. */
+/** Logs a pre-existing account in via the API and injects the session cookie. */
 export async function loginViaApi(params: {
   client: DemoblazeClient
   context: BrowserContext

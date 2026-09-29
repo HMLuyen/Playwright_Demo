@@ -67,15 +67,25 @@ npx playwright install --with-deps
 
 Config (`BASE_URL`, `API_URL`, `WORKERS`, `RETRIES`, `HEADLESS`) has working defaults in `utils/env.ts`/`playwright.config.ts`, and overrides via real environment variables (shell or CI).
 
-**Before running the UI suite:** the fixed accounts in `tests/ui/login.testdata.ts`
-(`testUserLogin`) and `tests/ui/order.testdata.ts` (`testUserOrder`) must already be signed up on
-the real site — there's no signup step in the test code. Create them once, e.g.:
+**Before running the UI suite:** these fixed accounts must already be signed up on the real
+site — there's no signup step in the test code:
+
+| Account | File | Used by |
+|---|---|---|
+| `testUserLogin` | `tests/ui/login.testdata.ts` | `login.spec.ts` (all tests) |
+| `testUserOrderValidation` | `tests/ui/order.testdata.ts` | `order.spec.ts` — validation errors group (`TC-015/016/017`) |
+| `testUserOrderPlacement` | `tests/ui/order.testdata.ts` | `order.spec.ts` — placement group (`TC-014/019`) |
+| `testUserOrderEmptyCart` | `tests/ui/order.testdata.ts` | `order.spec.ts` — empty cart group (`TC-018`) |
+
+One account per `order.spec.ts` `test.describe` group, not one shared account — lets the groups run
+in parallel against each other with no shared cart/session risk. Create them once, e.g.:
 
 ```bash
-curl -s -X POST https://api.demoblaze.com/signup \
-  -H "Content-Type: application/json" \
-  -d '{"username":"testUserLogin","password":"'"$(echo -n 'DemoPass123!' | base64)"'"}'
-# repeat with "testUserOrder"
+for u in testUserLogin testUserOrderValidation testUserOrderPlacement testUserOrderEmptyCart; do
+  curl -s -X POST https://api.demoblaze.com/signup \
+    -H "Content-Type: application/json" \
+    -d '{"username":"'"$u"'","password":"'"$(echo -n 'DemoPass123!' | base64)"'"}'
+done
 ```
 
 ## Run commands
