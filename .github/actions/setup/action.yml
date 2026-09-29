@@ -1,0 +1,19 @@
+name: Setup
+description: Install Node, npm dependencies, and Playwright browsers
+
+inputs:
+  browser:
+    description: Playwright browser to install (chromium, firefox, webkit). Empty installs all.
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+    - run: npm ci
+      shell: bash
+    - run: npx playwright install --with-deps ${{ inputs.browser }}
+      shell: bash

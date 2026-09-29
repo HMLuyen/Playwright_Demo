@@ -16,11 +16,9 @@ jobs:
         project: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: ./.github/actions/setup
         with:
-          node-version: 20
-      - run: npm ci
-      - run: npx playwright install --with-deps
+          browser: ${{ matrix.project }}
       - run: npx playwright test --project=${{ matrix.project }} --grep @smoke
 
   regression:
@@ -32,11 +30,9 @@ jobs:
         project: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: ./.github/actions/setup
         with:
-          node-version: 20
-      - run: npm ci
-      - run: npx playwright install --with-deps
+          browser: ${{ matrix.project }}
       - run: npx playwright test --project=${{ matrix.project }} --grep @regression
       - uses: actions/upload-artifact@v4
         if: always()

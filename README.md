@@ -9,22 +9,22 @@ Built with Playwright + TypeScript.
 ```
 ├── tests/
 │   ├── ui/
-│   │   ├── login.spec.ts        # Test script for login
-│   │   ├── login.testdata.ts    # Test data for login.spec.ts
+│   │   ├── login.spec.ts             # Test script for login
+│   │   ├── login.testdata.ts         # Test data for login.spec.ts
 │   │   ├── ...
 │   ├── api/
-│   │   ├── login.api.spec.ts        # Login API tests
-│   │   └── login.api.testdata.ts    #  Test data for API test
+│   │   ├── login.api.spec.ts         # Login API tests
+│   │   └── login.api.testdata.ts     #  Test data for API test
 │   │   ├── ...
-│   └── perf/        # Performent tests
-├── pages/           # Page Objects
-├── components/      # Component Objects
-├── api/             # DemoblazeClient - thin wrapper over the site's API
+│   └── perf/                         # Performent tests
+├── pages/                            # Page Objects
+├── components/                       # Component Objects
+├── api/                              # DemoblazeClient - thin wrapper over the site's API
 ├── fixtures/
-│   ├── ui-fixtures.ts   # Fixture for UI test
-│   └── api-fixtures.ts  # Fixture for API test
-├── utils/           # For helper utils. e.g. login-via-API helper, username generator, etc
-├── k6/              # Standalone k6 load test (separate tool, separate runtime)
+│   ├── ui-fixtures.ts                # Fixture for UI test
+│   └── api-fixtures.ts               # Fixture for API test
+├── utils/                            # For helper utils. e.g. login-via-API helper, username generator, etc
+├── k6/                               # Standalone k6 load test (separate tool, separate runtime)
 ├── playwright.config.ts              # Project configuration
 └── .github/workflows/tests.yml       # GitHub Action for triggering test
 ```
