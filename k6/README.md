@@ -3,15 +3,6 @@
 `login-load-test.js` is a small API-level load check against `/login` and `/entries`. It is
 separate from the Playwright suite.
 
-**Before running:** the fixed account in `login-load-test.testdata.js` (`testUserK6`) must already
-be signed up on the real site - there's no signup step in the script. Create it once:
-
-```bash
-curl -s -X POST https://api.demoblaze.com/signup \
-  -H "Content-Type: application/json" \
-  -d '{"username":"testUserK6","password":"'"$(echo -n 'DemoPass123!' | base64)"'"}'
-```
-
 ## Install
 
 ```bash

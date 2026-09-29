@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test'
 import { BASE_URL } from './utils/env'
 
 const HEADLESS = process.env.HEADLESS !== 'false'
-const WORKERS = process.env.WORKERS ? Number(process.env.WORKERS) : undefined
+const WORKERS = process.env.WORKERS ? Number(process.env.WORKERS) : 2
 const RETRIES = process.env.RETRIES ? Number(process.env.RETRIES) : process.env.CI ? 1 : 0
 
 export default defineConfig({

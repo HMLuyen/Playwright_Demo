@@ -1,4 +1,4 @@
-export const SAMSUNG_GALAXY_S6 = { id: 1, name: 'Samsung galaxy s6', price: 360 }
+export const SAMSUNG_GALAXY_S6 = { id: 1, price: 360 }
 
 /**
  * One dedicated account per test.describe group in order.spec.ts, not one shared account —

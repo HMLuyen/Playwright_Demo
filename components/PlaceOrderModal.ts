@@ -46,7 +46,6 @@ export class PlaceOrderModal extends BaseModal {
   private readonly purchaseButton: Locator = this.placeOrderModal.getByRole('button', {
     name: 'Purchase',
   })
-  private readonly okButton: Locator = this.page.getByRole('button', { name: 'OK' })
   private readonly confirmationPanel: Locator = this.page.locator('.sweet-alert')
   private readonly confirmationText: Locator = this.confirmationPanel.locator('p')
 
@@ -74,9 +73,5 @@ export class PlaceOrderModal extends BaseModal {
     const text = (await this.confirmationText.textContent()) ?? ''
     logger.step('Submit order, expect confirmation successfully')
     return parseConfirmationText(text)
-  }
-
-  async confirmOk(): Promise<void> {
-    await this.okButton.click()
   }
 }
