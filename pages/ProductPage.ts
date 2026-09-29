@@ -1,6 +1,7 @@
-import { Locator, test } from '@playwright/test'
+import { Locator } from '@playwright/test'
 import { BasePage } from './BasePage'
 import { captureDialog } from '../utils/dialog'
+import { logger } from '../utils/logger'
 
 export class ProductPage extends BasePage {
   private readonly productTitle: Locator = this.page.locator('.name')
@@ -8,10 +9,9 @@ export class ProductPage extends BasePage {
   private readonly addToCartLink: Locator = this.page.getByRole('link', { name: 'Add to cart' })
 
   async goto(productId: number): Promise<void> {
-    await test.step(`Go to product page (id=${productId})`, async () => {
-      await this.page.goto(`/prod.html?idp_=${productId}`)
-      await this.productTitle.waitFor({ state: 'visible' })
-    })
+    await this.page.goto(`/prod.html?idp_=${productId}`)
+    await this.productTitle.waitFor({ state: 'visible' })
+    logger.step(`Go to product page (id=${productId}) successfully`)
   }
 
   async getTitle(): Promise<string> {
@@ -23,10 +23,10 @@ export class ProductPage extends BasePage {
   }
 
   async addToCart(): Promise<string> {
-    return test.step('Add product to cart', async () => {
-      return captureDialog(this.page, async () => {
-        await this.addToCartLink.click()
-      })
+    const message = await captureDialog(this.page, async () => {
+      await this.addToCartLink.click()
     })
+    logger.step('Add product to cart successfully')
+    return message
   }
 }

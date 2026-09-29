@@ -9,46 +9,47 @@ test.describe('Login via API', () => {
     await apiClient.signup(API_TEST_ACCOUNT)
   })
 
-  test('valid login returns a token', { tag: ['@TC-021', '@smoke'] }, async ({ apiClient }) => {
-    const token = await test.step('Login with valid credentials', async () => {
-      return apiClient.login(API_TEST_ACCOUNT)
-    })
-    await test.step('Verify a token was returned', async () => {
+  test(
+    'valid login returns a token',
+    { tag: ['@TC-021', '@smoke'] },
+    async ({ apiClient, log }) => {
+      log.step('1. Login with valid credentials')
+      const token = await apiClient.login(API_TEST_ACCOUNT)
+
+      log.step('2. Verify a token was returned')
       expect(token.length).toBeGreaterThan(0)
-    })
-  })
+    },
+  )
 
   test(
     'wrong password rejects with "Wrong password."',
     { tag: ['@TC-022', '@regression'] },
-    async ({ apiClient }) => {
-      await test.step('Attempt login with wrong password', async () => {
-        await expect(
-          apiClient.login({
-            username: API_TEST_ACCOUNT.username,
-            password: 'DefinitelyWrongPassword!',
-          }),
-        ).rejects.toThrow('Wrong password.')
-      })
+    async ({ apiClient, log }) => {
+      log.step('1. Attempt login with wrong password')
+      await expect(
+        apiClient.login({
+          username: API_TEST_ACCOUNT.username,
+          password: 'DefinitelyWrongPassword!',
+        }),
+      ).rejects.toThrow('Wrong password.')
     },
   )
 
   test(
     'unknown username rejects with "User does not exist."',
     { tag: ['@TC-023', '@regression'] },
-    async ({ apiClient }) => {
-      await test.step('Attempt login with unknown username', async () => {
-        await expect(
-          apiClient.login({ username: `no_such_user_${Date.now()}`, password: 'anyPassword123' }),
-        ).rejects.toThrow('User does not exist.')
-      })
+    async ({ apiClient, log }) => {
+      log.step('1. Attempt login with unknown username')
+      await expect(
+        apiClient.login({ username: `no_such_user_${Date.now()}`, password: 'anyPassword123' }),
+      ).rejects.toThrow('User does not exist.')
     },
   )
 
   test(
     'password is base64-encoded before being sent, never plaintext',
     { tag: ['@TC-024', '@regression'] },
-    async ({ request }, testInfo) => {
+    async ({ request, log }, testInfo) => {
       const username = generateWorkerUsername(
         `${testInfo.project.name}_encodetest`,
         testInfo.workerIndex,
@@ -57,18 +58,16 @@ test.describe('Login via API', () => {
       const encoded = Buffer.from(rawPassword, 'utf-8').toString('base64')
       expect(encoded).not.toBe(rawPassword)
 
-      await test.step('Sign up new user with base64-encoded password', async () => {
-        await request.post(`${API_URL}/signup`, { data: { username, password: encoded } })
-      })
+      log.step('1. Sign up new user with base64-encoded password')
+      await request.post(`${API_URL}/signup`, { data: { username, password: encoded } })
 
-      await test.step('Login and verify response contains a token', async () => {
-        const loginRes = await request.post(`${API_URL}/login`, {
-          data: { username, password: encoded },
-        })
-        const body = await loginRes.json()
-        expect(typeof body).toBe('string')
-        expect(body).toContain('Auth_token: ')
+      log.step('2. Login and verify response contains a token')
+      const loginRes = await request.post(`${API_URL}/login`, {
+        data: { username, password: encoded },
       })
+      const body = await loginRes.json()
+      expect(typeof body).toBe('string')
+      expect(body).toContain('Auth_token: ')
     },
   )
 })

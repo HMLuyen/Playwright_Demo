@@ -4,76 +4,120 @@ import { LoginModal } from '../../components/LoginModal'
 import { LOGIN_TEST_ACCOUNT } from './login.testdata'
 
 test.describe('Login', () => {
-  test('valid credentials log the user in', { tag: ['@TC-001', '@smoke'] }, async ({ page }) => {
-    const homePage = new HomePage(page)
-    const loginModal = new LoginModal(page)
-    await homePage.goto()
-    await homePage.openLoginModal()
-    await loginModal.fill(LOGIN_TEST_ACCOUNT.username, LOGIN_TEST_ACCOUNT.password)
-    await loginModal.submitExpectingSuccess()
-    await homePage.expectLoggedIn(LOGIN_TEST_ACCOUNT.username)
-  })
+  test(
+    'valid credentials log the user in',
+    { tag: ['@TC-001', '@smoke'] },
+    async ({ page, log }) => {
+      const homePage = new HomePage(page)
+      const loginModal = new LoginModal(page)
+
+      log.step('1. Go to home page')
+      await homePage.goto()
+
+      log.step('2. Click "Log in"')
+      await homePage.openLoginModal()
+
+      log.step('3. Enter username and password')
+      await loginModal.fill(LOGIN_TEST_ACCOUNT.username, LOGIN_TEST_ACCOUNT.password)
+
+      log.step('4. Click "Log in" to submit')
+      await loginModal.submitExpectingSuccess()
+
+      log.step('5. Verify user is logged in')
+      await homePage.expectLoggedIn(LOGIN_TEST_ACCOUNT.username)
+    },
+  )
 
   test(
     'empty username and password shows validation alert',
     { tag: ['@TC-002', '@regression'] },
-    async ({ page }) => {
+    async ({ page, log }) => {
       const homePage = new HomePage(page)
       const loginModal = new LoginModal(page)
+
+      log.step('1. Go to home page')
       await homePage.goto()
+
+      log.step('2. Click "Log in"')
       await homePage.openLoginModal()
+
+      log.step('3. Leave username and password empty, click "Log in"')
       const message = await loginModal.submitExpectingDialog()
-      await test.step('Verify alert message', async () => {
-        expect(message).toBe('Please fill out Username and Password.')
-      })
+
+      log.step('4. Verify alert message')
+      expect(message).toBe('Please fill out Username and Password.')
     },
   )
 
   test(
     'unknown username shows "User does not exist."',
     { tag: ['@TC-003', '@regression'] },
-    async ({ page }) => {
+    async ({ page, log }) => {
       const homePage = new HomePage(page)
       const loginModal = new LoginModal(page)
+
+      log.step('1. Go to home page')
       await homePage.goto()
+
+      log.step('2. Click "Log in"')
       await homePage.openLoginModal()
+
+      log.step('3. Enter a never-registered username')
       await loginModal.fill(`no_such_user_${Date.now()}`, 'anyPassword123')
+
+      log.step('4. Click "Log in"')
       const message = await loginModal.submitExpectingDialog()
-      await test.step('Verify alert message', async () => {
-        expect(message).toBe('User does not exist.')
-      })
+
+      log.step('5. Verify alert message')
+      expect(message).toBe('User does not exist.')
     },
   )
 
   test(
     'wrong password for an existing user shows "Wrong password."',
     { tag: ['@TC-004', '@regression'] },
-    async ({ page }) => {
+    async ({ page, log }) => {
       const homePage = new HomePage(page)
       const loginModal = new LoginModal(page)
+
+      log.step('1. Go to home page')
       await homePage.goto()
+
+      log.step('2. Click "Log in"')
       await homePage.openLoginModal()
+
+      log.step('3. Enter existing username with wrong password')
       await loginModal.fill(LOGIN_TEST_ACCOUNT.username, 'DefinitelyWrongPassword!')
+
+      log.step('4. Click "Log in"')
       const message = await loginModal.submitExpectingDialog()
-      await test.step('Verify alert message', async () => {
-        expect(message).toBe('Wrong password.')
-      })
+
+      log.step('5. Verify alert message')
+      expect(message).toBe('Wrong password.')
     },
   )
 
   test(
     'SQL-injection-style username is treated as just another unknown user',
     { tag: ['@TC-008', '@regression'] },
-    async ({ page }) => {
+    async ({ page, log }) => {
       const homePage = new HomePage(page)
       const loginModal = new LoginModal(page)
+
+      log.step('1. Go to home page')
       await homePage.goto()
+
+      log.step('2. Click "Log in"')
       await homePage.openLoginModal()
+
+      log.step('3. Enter SQL-injection-style username')
       await loginModal.fill(`' OR '1'='1`, 'anyPassword123')
+
+      log.step('4. Click "Log in"')
       const message = await loginModal.submitExpectingDialog()
-      await test.step('Verify alert message', async () => {
-        expect(message).toBe('User does not exist.')
-      })
+
+      log.step('5. Verify alert message')
+      expect(message).toBe('User does not exist.')
     },
   )
 })

@@ -1,5 +1,5 @@
 /**
- * Builds a unique username per worker so parallel CI matrix jobs never collide.
+ * Builds a unique username.
  */
 export function generateWorkerUsername(projectName: string, workerIndex: number): string {
   const safeProject = projectName.toLowerCase().replace(/[^a-z0-9]+/g, '')

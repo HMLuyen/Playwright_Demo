@@ -1,5 +1,6 @@
-import { BrowserContext, Page, test } from '@playwright/test'
+import { BrowserContext, Page } from '@playwright/test'
 import { DemoblazeClient } from '../api/demoblazeClient'
+import { logger } from './logger'
 
 export interface FixedAccount {
   username: string
@@ -15,11 +16,10 @@ export async function loginViaApi(params: {
   account: FixedAccount
 }): Promise<void> {
   const { client, context, page, baseURL, account } = params
-  await test.step(`Log in via API as ${account.username}`, async () => {
-    const token = await client.login(account)
-    await client.clearCart(account.username)
-    await context.addCookies([{ name: 'tokenp_', value: token, url: baseURL }])
-    await page.goto('/')
-    await page.locator('#nameofuser').waitFor({ state: 'visible' })
-  })
+  const token = await client.login(account)
+  await client.clearCart(account.username)
+  await context.addCookies([{ name: 'tokenp_', value: token, url: baseURL }])
+  await page.goto('/')
+  await page.locator('#nameofuser').waitFor({ state: 'visible' })
+  logger.step(`Log in via API as ${account.username} successfully`)
 }

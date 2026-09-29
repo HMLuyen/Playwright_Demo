@@ -1,6 +1,7 @@
-import { Locator, test } from '@playwright/test'
+import { Locator } from '@playwright/test'
 import { BaseModal } from './BaseModal'
 import { captureDialog } from '../utils/dialog'
+import { logger } from '../utils/logger'
 
 export interface OrderDetails {
   name?: string
@@ -57,23 +58,22 @@ export class PlaceOrderModal extends BaseModal {
   private readonly confirmationText: Locator = this.confirmationPanel.locator('p')
 
   async fill(details: OrderDetails): Promise<void> {
-    await test.step('Fill order form', async () => {
-      if (details.name !== undefined) await this.nameInput.fill(details.name)
-      if (details.country !== undefined) await this.countryInput.fill(details.country)
-      if (details.city !== undefined) await this.cityInput.fill(details.city)
-      if (details.card !== undefined) await this.cardInput.fill(details.card)
-      if (details.month !== undefined) await this.monthInput.fill(details.month)
-      if (details.year !== undefined) await this.yearInput.fill(details.year)
-    })
+    if (details.name !== undefined) await this.nameInput.fill(details.name)
+    if (details.country !== undefined) await this.countryInput.fill(details.country)
+    if (details.city !== undefined) await this.cityInput.fill(details.city)
+    if (details.card !== undefined) await this.cardInput.fill(details.card)
+    if (details.month !== undefined) await this.monthInput.fill(details.month)
+    if (details.year !== undefined) await this.yearInput.fill(details.year)
+    logger.step('Fill order form successfully')
   }
 
   /** Missing Name/Card shows a native alert — use for the negative-path cases. */
   async submitExpectingDialog(): Promise<string> {
-    return test.step('Submit order, expect alert', async () => {
-      return captureDialog(this.page, async () => {
-        await this.purchaseButton.click()
-      })
+    const message = await captureDialog(this.page, async () => {
+      await this.purchaseButton.click()
     })
+    logger.step('Submit order, expect alert successfully')
+    return message
   }
 
   /**
@@ -82,12 +82,11 @@ export class PlaceOrderModal extends BaseModal {
    * this also fires for an empty cart; see the known-defect tests).
    */
   async submitExpectingConfirmation(): Promise<PurchaseConfirmation> {
-    return test.step('Submit order, expect confirmation', async () => {
-      await this.purchaseButton.click()
-      await this.confirmationPanel.getByText('Thank you for your purchase!').waitFor()
-      const text = (await this.confirmationText.textContent()) ?? ''
-      return parseConfirmationText(text)
-    })
+    await this.purchaseButton.click()
+    await this.confirmationPanel.getByText('Thank you for your purchase!').waitFor()
+    const text = (await this.confirmationText.textContent()) ?? ''
+    logger.step('Submit order, expect confirmation successfully')
+    return parseConfirmationText(text)
   }
 
   async confirmOk(): Promise<void> {

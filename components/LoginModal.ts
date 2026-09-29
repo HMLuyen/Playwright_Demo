@@ -1,6 +1,7 @@
-import { Locator, test } from '@playwright/test'
+import { Locator } from '@playwright/test'
 import { BaseModal } from './BaseModal'
 import { captureDialog } from '../utils/dialog'
+import { logger } from '../utils/logger'
 
 /**
  * Scoped to #logInModal because "Log in" and "Close" button names are duplicated
@@ -13,19 +14,18 @@ export class LoginModal extends BaseModal {
   private readonly loginButton: Locator = this.loginModal.getByRole('button', { name: 'Log in' })
 
   async fill(username: string, password: string): Promise<void> {
-    await test.step(`Fill login form (username: ${username})`, async () => {
-      await this.usernameInput.fill(username)
-      await this.passwordInput.fill(password)
-    })
+    await this.usernameInput.fill(username)
+    await this.passwordInput.fill(password)
+    logger.step(`Fill login form (username: ${username}) successfully`)
   }
 
   /** For the negative/edge cases: empty fields, unknown user, wrong password. */
   async submitExpectingDialog(): Promise<string> {
-    return test.step('Submit login, expect alert', async () => {
-      return captureDialog(this.page, async () => {
-        await this.loginButton.click()
-      })
+    const message = await captureDialog(this.page, async () => {
+      await this.loginButton.click()
     })
+    logger.step('Submit login, expect alert successfully')
+    return message
   }
 
   /**
@@ -34,13 +34,12 @@ export class LoginModal extends BaseModal {
    * can resolve before the async login call has even started.
    */
   async submitExpectingSuccess(): Promise<void> {
-    await test.step('Submit login, expect success', async () => {
-      const loginResponse = this.page.waitForResponse(
-        (res) => res.url().includes('/login') && res.request().method() === 'POST',
-      )
-      await this.loginButton.click()
-      await loginResponse
-      await this.page.waitForLoadState('load')
-    })
+    const loginResponse = this.page.waitForResponse(
+      (res) => res.url().includes('/login') && res.request().method() === 'POST',
+    )
+    await this.loginButton.click()
+    await loginResponse
+    await this.page.waitForLoadState('load')
+    logger.step('Submit login, expect success successfully')
   }
 }

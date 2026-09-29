@@ -1,4 +1,5 @@
-import { Locator, Page, expect, test } from '@playwright/test'
+import { Locator, Page, expect } from '@playwright/test'
+import { logger } from '../utils/logger'
 
 export abstract class BasePage {
   protected readonly navbarToggler: Locator
@@ -11,11 +12,9 @@ export abstract class BasePage {
     this.welcomeText = page.locator('#nameofuser')
   }
 
-  protected async navigateTo(path: string, stepName: string): Promise<void> {
-    await test.step(stepName, async () => {
-      const response = await this.page.goto(path)
-      expect(response?.status(), `Expect navigation to "${path}" to succeed`).toBeLessThan(400)
-    })
+  protected async navigateTo(path: string): Promise<void> {
+    const response = await this.page.goto(path)
+    expect(response?.status(), `Expect navigation to "${path}" to succeed`).toBeLessThan(400)
   }
 
   /** Mobile viewports collapse the navbar behind a toggler. */
@@ -30,18 +29,16 @@ export abstract class BasePage {
 
   /** Navbar chrome — present on every page. */
   async openLoginModal(): Promise<void> {
-    await test.step('Open login modal', async () => {
-      await this.openMobileNavIfCollapsed()
-      await this.loginLink.click()
-    })
+    await this.openMobileNavIfCollapsed()
+    await this.loginLink.click()
+    logger.step('Open login modal successfully')
   }
 
   async expectLoggedIn(username: string): Promise<void> {
-    await test.step(`Verify logged in as ${username}`, async () => {
-      await expect(this.welcomeText, `Expect navbar to show "Welcome ${username}"`).toHaveText(
-        `Welcome ${username}`,
-      )
-      await expect(this.loginLink, 'Expect "Log in" link to be hidden once logged in').toBeHidden()
-    })
+    await expect(this.welcomeText, `Expect navbar to show "Welcome ${username}"`).toHaveText(
+      `Welcome ${username}`,
+    )
+    await expect(this.loginLink, 'Expect "Log in" link to be hidden once logged in').toBeHidden()
+    logger.step(`Verify logged in as ${username} successfully`)
   }
 }
