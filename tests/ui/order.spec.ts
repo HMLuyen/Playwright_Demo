@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures/ui-fixtures'
 import { ProductPage } from '../../pages/ProductPage'
 import { CartPage } from '../../pages/CartPage'
-import { PlaceOrderModal } from '../../pages/PlaceOrderModal'
+import { PlaceOrderModal } from '../../components/PlaceOrderModal'
 import { loginViaApi } from '../../utils/auth'
 import {
   SAMSUNG_GALAXY_S6,

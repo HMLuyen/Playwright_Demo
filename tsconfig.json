@@ -14,6 +14,7 @@
   "include": [
     "tests/**/*.ts",
     "pages/**/*.ts",
+    "components/**/*.ts",
     "api/**/*.ts",
     "fixtures/**/*.ts",
     "utils/**/*.ts",

@@ -21,7 +21,8 @@ every site behavior verified live against the real site before any code was writ
 │   │   ├── login.api.spec.ts        # Login API tests
 │   │   └── login.api.testdata.ts    # fixed shared API test account
 │   └── perf/        # Browser-level navigation-timing budget check
-├── pages/           # Page Object Model — one class per page/modal
+├── pages/           # Page Objects — navigable pages (BasePage, HomePage, ProductPage, CartPage)
+├── components/      # Component Objects — in-page fragments with no URL (BaseModal, LoginModal, PlaceOrderModal)
 ├── api/             # DemoblazeClient — thin wrapper over the site's API
 ├── fixtures/
 │   ├── ui-fixtures.ts   # just workerApiClient — no page objects, no account
@@ -34,8 +35,11 @@ every site behavior verified live against the real site before any code was writ
 
 **Why this shape:**
 
-- **Page Object Model** (`pages/`) isolates selectors from test logic — a selector change touches
-  one file, not every spec.
+- **Page Objects (`pages/`) vs Component Objects (`components/`).** A page has a URL and is
+  navigated to (`HomePage`, `ProductPage`, `CartPage` — extend `BasePage`, get navigation +
+  navbar-chrome helpers for free). A modal has no URL, it's opened from within whatever page is
+  current (`LoginModal`, `PlaceOrderModal` — extend `BaseModal`, just get `this.page`). Either way,
+  isolating selectors from test logic means a selector change touches one file, not every spec.
 - **Page objects are constructed inside each test, not injected via fixture.** Wiring every POM
   into a shared fixture doesn't scale as more spec files get added — each spec just does
   `new CartPage(page)` for what it actually needs.
@@ -70,12 +74,12 @@ Config (`BASE_URL`, `API_URL`, `WORKERS`, `RETRIES`, `HEADLESS`) has working def
 **Before running the UI suite:** these fixed accounts must already be signed up on the real
 site — there's no signup step in the test code:
 
-| Account | File | Used by |
-|---|---|---|
-| `testUserLogin` | `tests/ui/login.testdata.ts` | `login.spec.ts` (all tests) |
+| Account                   | File                         | Used by                                                      |
+| ------------------------- | ---------------------------- | ------------------------------------------------------------ |
+| `testUserLogin`           | `tests/ui/login.testdata.ts` | `login.spec.ts` (all tests)                                  |
 | `testUserOrderValidation` | `tests/ui/order.testdata.ts` | `order.spec.ts` — validation errors group (`TC-015/016/017`) |
-| `testUserOrderPlacement` | `tests/ui/order.testdata.ts` | `order.spec.ts` — placement group (`TC-014/019`) |
-| `testUserOrderEmptyCart` | `tests/ui/order.testdata.ts` | `order.spec.ts` — empty cart group (`TC-018`) |
+| `testUserOrderPlacement`  | `tests/ui/order.testdata.ts` | `order.spec.ts` — placement group (`TC-014/019`)             |
+| `testUserOrderEmptyCart`  | `tests/ui/order.testdata.ts` | `order.spec.ts` — empty cart group (`TC-018`)                |
 
 One account per `order.spec.ts` `test.describe` group, not one shared account — lets the groups run
 in parallel against each other with no shared cart/session risk. Create them once, e.g.:
@@ -107,7 +111,8 @@ HEADLESS=false npx playwright test --project=chromium   # override any config de
 
 1. Add a row to `test-cases/cases.json` with a new TC ID, following the existing shape.
 2. Regenerate `test-cases/demoblaze-test-cases.xlsx` from the updated JSON.
-3. If the flow needs new page interactions, add/extend a class in `pages/`.
+3. If the flow needs new page interactions, add/extend a class in `pages/` (navigable page) or
+   `components/` (modal/fragment with no URL).
 4. If it needs new test data, add a `testdata.ts` next to the new spec file — don't add to a
    shared `data/` folder or `.env`. If it needs a logged-in user, use a fixed, pre-existing
    account in that file (no signup step) — don't reuse another spec's account.

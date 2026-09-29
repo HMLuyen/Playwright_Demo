@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures/ui-fixtures'
 import { HomePage } from '../../pages/HomePage'
-import { LoginModal } from '../../pages/LoginModal'
+import { LoginModal } from '../../components/LoginModal'
 import { LOGIN_TEST_ACCOUNT } from './login.testdata'
 
 test.describe('Login', () => {

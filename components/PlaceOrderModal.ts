@@ -1,4 +1,5 @@
-import { Locator, Page, test } from '@playwright/test'
+import { Locator, test } from '@playwright/test'
+import { BaseModal } from './BaseModal'
 import { captureDialog } from '../utils/dialog'
 
 export interface OrderDetails {
@@ -40,21 +41,29 @@ function parseConfirmationText(text: string): PurchaseConfirmation {
   }
 }
 
-export class PlaceOrderModal {
-  private readonly root: Locator
-
-  constructor(private readonly page: Page) {
-    this.root = page.locator('#orderModal')
-  }
+export class PlaceOrderModal extends BaseModal {
+  private readonly placeOrderModal: Locator = this.page.locator('#orderModal')
+  private readonly nameInput: Locator = this.placeOrderModal.locator('#name')
+  private readonly countryInput: Locator = this.placeOrderModal.locator('#country')
+  private readonly cityInput: Locator = this.placeOrderModal.locator('#city')
+  private readonly cardInput: Locator = this.placeOrderModal.locator('#card')
+  private readonly monthInput: Locator = this.placeOrderModal.locator('#month')
+  private readonly yearInput: Locator = this.placeOrderModal.locator('#year')
+  private readonly purchaseButton: Locator = this.placeOrderModal.getByRole('button', {
+    name: 'Purchase',
+  })
+  private readonly okButton: Locator = this.page.getByRole('button', { name: 'OK' })
+  private readonly confirmationPanel: Locator = this.page.locator('.sweet-alert')
+  private readonly confirmationText: Locator = this.confirmationPanel.locator('p')
 
   async fill(details: OrderDetails): Promise<void> {
     await test.step('Fill order form', async () => {
-      if (details.name !== undefined) await this.root.locator('#name').fill(details.name)
-      if (details.country !== undefined) await this.root.locator('#country').fill(details.country)
-      if (details.city !== undefined) await this.root.locator('#city').fill(details.city)
-      if (details.card !== undefined) await this.root.locator('#card').fill(details.card)
-      if (details.month !== undefined) await this.root.locator('#month').fill(details.month)
-      if (details.year !== undefined) await this.root.locator('#year').fill(details.year)
+      if (details.name !== undefined) await this.nameInput.fill(details.name)
+      if (details.country !== undefined) await this.countryInput.fill(details.country)
+      if (details.city !== undefined) await this.cityInput.fill(details.city)
+      if (details.card !== undefined) await this.cardInput.fill(details.card)
+      if (details.month !== undefined) await this.monthInput.fill(details.month)
+      if (details.year !== undefined) await this.yearInput.fill(details.year)
     })
   }
 
@@ -62,7 +71,7 @@ export class PlaceOrderModal {
   async submitExpectingDialog(): Promise<string> {
     return test.step('Submit order, expect alert', async () => {
       return captureDialog(this.page, async () => {
-        await this.root.getByRole('button', { name: 'Purchase' }).click()
+        await this.purchaseButton.click()
       })
     })
   }
@@ -74,15 +83,14 @@ export class PlaceOrderModal {
    */
   async submitExpectingConfirmation(): Promise<PurchaseConfirmation> {
     return test.step('Submit order, expect confirmation', async () => {
-      await this.root.getByRole('button', { name: 'Purchase' }).click()
-      const confirmation = this.page.locator('.sweet-alert')
-      await confirmation.getByText('Thank you for your purchase!').waitFor()
-      const text = (await confirmation.locator('p').textContent()) ?? ''
+      await this.purchaseButton.click()
+      await this.confirmationPanel.getByText('Thank you for your purchase!').waitFor()
+      const text = (await this.confirmationText.textContent()) ?? ''
       return parseConfirmationText(text)
     })
   }
 
   async confirmOk(): Promise<void> {
-    await this.page.getByRole('button', { name: 'OK' }).click()
+    await this.okButton.click()
   }
 }

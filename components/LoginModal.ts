@@ -1,21 +1,21 @@
-import { Locator, Page, test } from '@playwright/test'
+import { Locator, test } from '@playwright/test'
+import { BaseModal } from './BaseModal'
 import { captureDialog } from '../utils/dialog'
 
 /**
  * Scoped to #logInModal because "Log in" and "Close" button names are duplicated
  * elsewhere on the page (e.g. the signup modal also has a "Close" button).
  */
-export class LoginModal {
-  private readonly root: Locator
-
-  constructor(private readonly page: Page) {
-    this.root = page.locator('#logInModal')
-  }
+export class LoginModal extends BaseModal {
+  private readonly loginModal: Locator = this.page.locator('#logInModal')
+  private readonly usernameInput: Locator = this.loginModal.locator('#loginusername')
+  private readonly passwordInput: Locator = this.loginModal.locator('#loginpassword')
+  private readonly loginButton: Locator = this.loginModal.getByRole('button', { name: 'Log in' })
 
   async fill(username: string, password: string): Promise<void> {
     await test.step(`Fill login form (username: ${username})`, async () => {
-      await this.root.locator('#loginusername').fill(username)
-      await this.root.locator('#loginpassword').fill(password)
+      await this.usernameInput.fill(username)
+      await this.passwordInput.fill(password)
     })
   }
 
@@ -23,7 +23,7 @@ export class LoginModal {
   async submitExpectingDialog(): Promise<string> {
     return test.step('Submit login, expect alert', async () => {
       return captureDialog(this.page, async () => {
-        await this.root.getByRole('button', { name: 'Log in' }).click()
+        await this.loginButton.click()
       })
     })
   }
@@ -38,7 +38,7 @@ export class LoginModal {
       const loginResponse = this.page.waitForResponse(
         (res) => res.url().includes('/login') && res.request().method() === 'POST',
       )
-      await this.root.getByRole('button', { name: 'Log in' }).click()
+      await this.loginButton.click()
       await loginResponse
       await this.page.waitForLoadState('load')
     })
