@@ -119,7 +119,7 @@ test.describe('Place Order — placement', () => {
   test(
     'Verify a valid order with only Name and Card succeeds',
     { tag: ['@TC-009', '@smoke'] },
-    async ({ page, log }) => {
+    async ({ page, log, browserName }) => {
       const productPage = new ProductPage(page)
       const cartPage = new CartPage(page)
       const placeOrderModal = new PlaceOrderModal(page)

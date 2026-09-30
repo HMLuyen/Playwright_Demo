@@ -1,16 +1,39 @@
-import { Page } from '@playwright/test'
+import { Dialog, Page } from '@playwright/test'
 
 /**
- * Register event listener for dialogs before the triggering action
- * and must accept() inside the handler itself (the alert fires synchronously
- * inside the click and blocks page script execution until dismissed).
+ * Register the dialog listener before the triggering action and accept() inside the handler:
+ * client-side alerts fire inside the click and block it until dismissed. Server-side alerts
+ * fire after the response arrives, so wait up to timeoutMs for the dialog instead of returning
+ * as soon as the click resolves.
  */
-export async function captureDialog(page: Page, trigger: () => Promise<void>): Promise<string> {
-  let message = ''
-  page.once('dialog', async (dialog) => {
-    message = dialog.message()
-    await dialog.accept()
+export async function captureDialog(
+  page: Page,
+  trigger: () => Promise<void>,
+  timeoutMs = 5000,
+): Promise<string> {
+  let resolveMessage!: (message: string) => void
+  const dialogMessage = new Promise<string>((resolve) => {
+    resolveMessage = resolve
   })
-  await trigger()
-  return message
+  const onDialog = async (dialog: Dialog): Promise<void> => {
+    const message = dialog.message()
+    await dialog.accept()
+    resolveMessage(message)
+  }
+  page.once('dialog', onDialog)
+
+  let timer: NodeJS.Timeout | undefined
+  try {
+    await trigger()
+    const timeout = new Promise<never>((_, reject) => {
+      timer = setTimeout(
+        () => reject(new Error(`Expected a dialog within ${timeoutMs}ms but none appeared`)),
+        timeoutMs,
+      )
+    })
+    return await Promise.race([dialogMessage, timeout])
+  } finally {
+    clearTimeout(timer)
+    page.off('dialog', onDialog)
+  }
 }
