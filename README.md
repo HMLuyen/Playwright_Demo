@@ -1,8 +1,13 @@
 # Playwright Demo - DemoBlaze Automation
 
-Automation demo for [DemoBlaze](https://www.demoblaze.com/)
+Automation demo for [DemoBlaze](https://www.demoblaze.com/), covering login and order workflows.
 
-Built with Playwright + TypeScript.
+* Built with Playwright + TypeScript, covering UI, API, and performance testing.
+* UI tests follow the Page Object Model, with page objects under pages/ and reusable modal components under components/.
+* Shared fixtures in fixtures/base-test.ts provide logging and a worker-scoped API client.
+* Test specs are organized under tests/ui, tests/api, and tests/perf, with test data colocated with each spec.
+* A separate k6 script covers API load testing.
+* Chromium and Firefox tests run in parallel, with test execution filtered using @smoke and @regression tags.
 
 ## Framework structure
 

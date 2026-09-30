@@ -10,7 +10,7 @@ test.describe('Login', () => {
   })
 
   test(
-    'valid credentials log the user in',
+    'Verify user can log in with valid credentials',
     { tag: ['@TC-001', '@smoke'] },
     async ({ page, log }) => {
       const homePage = new HomePage(page)
@@ -34,7 +34,7 @@ test.describe('Login', () => {
   )
 
   test(
-    'empty username and password shows validation alert',
+    'Verify user cannot log in with empty username and password',
     { tag: ['@TC-002', '@regression'] },
     async ({ page, log }) => {
       const homePage = new HomePage(page)

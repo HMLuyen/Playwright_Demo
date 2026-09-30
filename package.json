@@ -2,7 +2,7 @@
   "name": "playwright-demo",
   "version": "1.0.0",
   "private": true,
-  "description": "Automation demo for DemoBlaze (Login, Cart, Order) using Playwright + TypeScript.",
+  "description": "Automation demo for DemoBlaze (Login and Order) using Playwright and TypeScript.",
   "scripts": {
     "test": "playwright test",
     "test:smoke": "playwright test --grep @smoke",

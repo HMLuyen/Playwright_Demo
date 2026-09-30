@@ -8,7 +8,7 @@ test.describe('Login via API', () => {
   })
 
   test(
-    'valid login returns a token',
+    'Verify valid login returns a token',
     { tag: ['@TC-021', '@smoke'] },
     async ({ apiClient, log }) => {
       log.step('1. Login with valid credentials')
@@ -20,7 +20,7 @@ test.describe('Login via API', () => {
   )
 
   test(
-    'wrong password rejects with "Wrong password."',
+    'Verify wrong password rejects with "Wrong password."',
     { tag: ['@TC-022', '@regression'] },
     async ({ apiClient, log }) => {
       log.step('1. Attempt login with wrong password')

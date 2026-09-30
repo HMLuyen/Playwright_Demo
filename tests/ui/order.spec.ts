@@ -29,7 +29,7 @@ test.describe('Place Order — validation errors', () => {
   })
 
   test(
-    'missing both Name and Card shows validation alert',
+    'Verify missing both Name and Card shows validation alert',
     { tag: ['@TC-015', '@regression'] },
     async ({ page, log }) => {
       const cartPage = new CartPage(page)
@@ -50,7 +50,7 @@ test.describe('Place Order — validation errors', () => {
   )
 
   test(
-    'missing Name only shows the same validation alert',
+    'Verify missing Name only shows the same validation alert',
     { tag: ['@TC-016', '@regression'] },
     async ({ page, log }) => {
       const cartPage = new CartPage(page)
@@ -74,7 +74,7 @@ test.describe('Place Order — validation errors', () => {
   )
 
   test(
-    'missing Card only shows the same validation alert',
+    'Verify missing Card only shows the same validation alert',
     { tag: ['@TC-017', '@regression'] },
     async ({ page, log }) => {
       const cartPage = new CartPage(page)
