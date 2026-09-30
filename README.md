@@ -2,11 +2,10 @@
 
 Automation demo for [DemoBlaze](https://www.demoblaze.com/), covering login and order workflows.
 
-* Built with `Playwright + TypeScript`, covering UI, API, and performance testing.
+* Built with `Playwright + TypeScript`, covering UI and API testing.
 * UI tests follow the Page Object Model, with page objects under `pages/` and reusable modal components under `components/`.
 * Shared fixtures in `fixtures/base-test.ts` provide logging and a worker-scoped API client.
-* Test specs are organized under `tests/ui`, `tests/api`, and `tests/perf`, with test data colocated with each spec.
-* A separate k6 script covers API load testing.
+* Test specs are organized under `tests/ui` and `tests/api`, with test data colocated with each spec.
 * Chromium and Firefox tests run in parallel, with test execution filtered using `@smoke` and `@regression` tags.
 
 ## Framework structure
@@ -21,14 +20,12 @@ Automation demo for [DemoBlaze](https://www.demoblaze.com/), covering login and 
 │   │   ├── login.api.spec.ts         # Login API tests
 │   │   └── login.api.testdata.ts     #  Test data for API test
 │   │   ├── ...
-│   └── perf/                         # Performent tests
 ├── pages/                            # Page Objects
 ├── components/                       # Component Objects
 ├── api/                              # DemoblazeClient - thin wrapper over the site's API
 ├── fixtures/
 │   └── base-test.ts                  # Base test with shared fixtures: log, apiClient
 ├── utils/                            # For helper utils. e.g. loginViaApi helper, etc
-├── k6/                               # Standalone k6 load test (separate tool, separate runtime)
 ├── playwright.config.ts              # Project configuration
 └── .github/workflows/tests.yml       # GitHub Action for triggering test
 ```
@@ -58,7 +55,6 @@ npx playwright test --grep @regression                  # full regression set (n
 npx playwright test --grep @TC-013                      # one case, by its sheet ID
 npm run test:ui                                         # UI specs only
 npm run test:api                                        # API specs only
-npm run test:perf                                       # performance spec only
 npm run test:report                                     # open the last HTML report
 HEADLESS=false npx playwright test --project=chromium   # override any config default via env var
 ```
@@ -69,19 +65,4 @@ HEADLESS=false npx playwright test --project=chromium   # override any config de
 
 - **On every pull request:** `@smoke` tests across chromium/firefox.
 - **Nightly (and manual `workflow_dispatch`):** full `@regression` set across the same 2 browsers.
-- **k6 runs on manual `workflow_dispatch` only** - it's a load test against a public third-party
-  site we don't own, so it doesn't run automatically on a schedule or on PRs.
-- The HTML report and k6 summary are uploaded as build artifacts on every run.
-
-## Performance testing
-
-- `tests/perf/navigation-timing.spec.ts` - browser-level budget check (home page
-  `DOMContentLoaded` under 3s), runs as part of the normal Playwright suite.
-- `k6/login-load-test.js` - API-level load check against `/login` and `/entries`. See
-  [`k6/README.md`](k6/README.md) for install/run instructions. Quick start:
-
-  ```bash
-  brew install k6
-  k6 run k6/login-load-test.js
-  k6 run -e VUS=10 -e DURATION=60s k6/login-load-test.js   # override the defaults
-  ```
+- The HTML report is uploaded as a build artifact on every run.

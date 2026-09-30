@@ -49,19 +49,3 @@ jobs:
           name: playwright-report-${{ matrix.project }}
           path: playwright-report/
           retention-days: 7
-
-  # Load test — only on manual dispatch.
-  k6-load-test:
-    if: github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-      - uses: grafana/setup-k6-action@v1
-      - run: k6 run --summary-export=k6-summary.json k6/login-load-test.js
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: k6-summary
-          path: k6-summary.json
-          retention-days: 7
