@@ -55,7 +55,7 @@ npx playwright test                                     # full suite, both brows
 npx playwright test --project=firefox                   # one browser project
 npx playwright test --grep @smoke                       # fast subset (PR gate)
 npx playwright test --grep @regression                  # full regression set (nightly)
-npx playwright test --grep @TC-013                      # one case, by its sheet ID
+npx playwright test --grep @TC-013                      # one case, by its tag
 npm run test:ui                                         # UI specs only
 npm run test:api                                        # API specs only
 npm run test:perf                                       # performance spec only
