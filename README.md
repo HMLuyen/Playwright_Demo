@@ -19,7 +19,7 @@ Automation demo for [DemoBlaze](https://www.demoblaze.com/), covering login and 
 │   │   ├── ...
 │   ├── api/
 │   │   ├── login.api.spec.ts         # Login API tests
-│   │   └── login.api.testdata.ts     #  Test data for API test
+│   │   └── login.api.testdata.ts     # Test data for API test
 │   │   ├── ...
 │   └── perf/                         # Performent tests
 ├── pages/                            # Page Objects
