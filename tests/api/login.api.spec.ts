@@ -8,20 +8,19 @@ test.describe('Login via API', () => {
   })
 
   test(
-    'Verify valid login returns a token',
-    { tag: ['@TC-021', '@smoke'] },
+    'Verify unknown username rejects with "User does not exist."',
+    { tag: ['@TC-003', '@regression'] },
     async ({ apiClient, log }) => {
-      log.step('1. Login with valid credentials')
-      const token = await apiClient.login(API_TEST_ACCOUNT)
-
-      log.step('2. Verify a token was returned')
-      expect(token.length).toBeGreaterThan(0)
+      log.step('1. Attempt login with unknown username')
+      await expect(
+        apiClient.login({ username: `no_such_user_${Date.now()}`, password: 'anyPassword123' }),
+      ).rejects.toThrow('User does not exist.')
     },
   )
 
   test(
     'Verify wrong password rejects with "Wrong password."',
-    { tag: ['@TC-022', '@regression'] },
+    { tag: ['@TC-004', '@regression'] },
     async ({ apiClient, log }) => {
       log.step('1. Attempt login with wrong password')
       await expect(

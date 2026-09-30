@@ -30,7 +30,7 @@ test.describe('Place Order — validation errors', () => {
 
   test(
     'Verify missing both Name and Card shows validation alert',
-    { tag: ['@TC-015', '@regression'] },
+    { tag: ['@TC-010', '@regression'] },
     async ({ page, log }) => {
       const cartPage = new CartPage(page)
       const placeOrderModal = new PlaceOrderModal(page)
@@ -51,7 +51,7 @@ test.describe('Place Order — validation errors', () => {
 
   test(
     'Verify missing Name only shows the same validation alert',
-    { tag: ['@TC-016', '@regression'] },
+    { tag: ['@TC-011', '@regression'] },
     async ({ page, log }) => {
       const cartPage = new CartPage(page)
       const placeOrderModal = new PlaceOrderModal(page)
@@ -75,7 +75,7 @@ test.describe('Place Order — validation errors', () => {
 
   test(
     'Verify missing Card only shows the same validation alert',
-    { tag: ['@TC-017', '@regression'] },
+    { tag: ['@TC-012', '@regression'] },
     async ({ page, log }) => {
       const cartPage = new CartPage(page)
       const placeOrderModal = new PlaceOrderModal(page)
@@ -118,7 +118,7 @@ test.describe('Place Order — placement', () => {
 
   test(
     'Verify a valid order with only Name and Card succeeds',
-    { tag: ['@TC-014', '@smoke'] },
+    { tag: ['@TC-009', '@smoke'] },
     async ({ page, log }) => {
       const productPage = new ProductPage(page)
       const cartPage = new CartPage(page)
@@ -168,7 +168,7 @@ test.describe('Place Order — empty cart defect', () => {
 
   test(
     'Verify an order can be placed with an empty cart',
-    { tag: ['@TC-018', '@regression'] },
+    { tag: ['@TC-013', '@regression'] },
     async ({ page, log }) => {
       const cartPage = new CartPage(page)
       const placeOrderModal = new PlaceOrderModal(page)

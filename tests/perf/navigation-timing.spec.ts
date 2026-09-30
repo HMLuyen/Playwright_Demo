@@ -6,7 +6,7 @@ const DOM_CONTENT_LOADED_BUDGET_MS = 3000
 test.describe('Performance tests', () => {
   test(
     'home page DOMContentLoaded completes within baseline',
-    { tag: ['@TC-020', '@regression'] },
+    { tag: ['@regression'] },
     async ({ page }) => {
       await page.goto('/')
 
