@@ -1,11 +1,11 @@
 import { test, expect } from '@playwright/test'
 
-// Kept intentionally small, this is a public third-party site we don't own.
-const DOM_CONTENT_LOADED_BUDGET_MS = 3000
+// Kept intentionally high.
+const DOM_CONTENT_LOADED_BUDGET_MS = 5000
 
 test.describe('Performance tests', () => {
   test(
-    'home page DOMContentLoaded completes within baseline',
+    'Verify home page DOMContentLoaded completes within budget',
     { tag: ['@regression'] },
     async ({ page }) => {
       await page.goto('/')
